@@ -1,0 +1,261 @@
+\section{Features}
+% This section contains a list of requirement statements.  This should be of the
+% form "the system shall..."  and worded in a way that satisfaction of the
+% requirement can be verified.  For example, the software shall authenticate
+% users with at least two identification factors.  
+
+%------------------------------------------Display PDF-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Display PDF}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product. 
+Displaying the PDF is important so that it may be viewed by the grader.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+This is critical to the software's function.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The user clicks import or selects a file in the UI.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall display a pdf file that has been loaded into the application a page at a time.
+
+%------------------------------------------Upload/Intake-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Upload/Intake}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product. 
+This feature is one of the first steps to be completed in order to grade the document.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+This feature is critical to the functionality of this software.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The user wishes to use the tool and selects a PDF document. The software opens the file and hands it off to the display.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall allow selection of a PDF document to be loaded into the application.
+
+%------------------------------------------Hotkeys-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Hotkeys}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.  
+This feature allows the user to assign hotkeys to make the grading process faster. 
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+This is not necessary for operation of the software but it is the main feature that would allow for an increase in efficiency. 
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case.
+After the PDF is uploaded and questions have been focused the grader will be prompted if they want to set up any hotkeys. The system will respond by prompting for bindings and functions. 
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall allow the user to assign hotkeys for ease of grading.
+
+%------------------------------------------Export-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Export}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product. 
+The export feature represents our final output of the software and will be the product that the students get to see.
+
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature.
+This relatively high priority, this is a major feature in the overall workflow of the software.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The grader has finished grading and selects the export feature in the UI. The software will then compile all the grading information into the final PDF.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall export finished papers as a PDF with grading details and comments.
+
+%------------------------------------------Concurrency-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Concurrency}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.  
+This feature allows for increased speed in grading as you can have the grading work split between multiple people.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+This feature is medium priority. The software will still work without the concurrency feature, but with it implemented correctly the speed of grading could be greatly increased.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+One grader is already grading a test and another grader wants to help speed things up. The software will allow both graders to access the PDF being graded and be able to work on separate questions at the same time.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall support multiple graders grading the test concurrently.
+
+%------------------------------------------Question Focus-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Question Focus}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.  
+This is a feature that will act as a quick tool to focus attention to a single question at a time.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+This feature is of medium importance. The software will still function without this feature, but it would be less convenient.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The grader wants to be able to see a single question, and not the surrounding content from other questions.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall allow the grader to focus on a single question.
+
+%------------------------------------------Test by Test-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Test by Test}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.  
+This feature allows the grader to grade the same question for all of the tests in order, so that the grader will not have to get their mind into a different mode for each different question.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+The importance of this feature is medium-high. Without this feature, the grader would still be able to grade each test, but they would have to manually scroll through the tests to find the same question for the next student.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The grader wants to grade the same question on the next student's test, so they press a key. The display now switches to the next student's test and jumps to the same question.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall allow the grader to view the same question on different test in a row by hitting a single key.
+
+%------------------------------------------Hyper-linked Table of Contents-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Hyper-linked Table of Contents}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.
+The table inserted into the final output at the beginning will contain links to specific questions though the test along with an overview.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+This feature is of moderate priority. The software would be functional without it but the output will be more of a hassle to view.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The trigger will be a user clicking on one of the links on the first page o the output. The software response will be to display the page containing the relevant linked information.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall use hyperlinks to make navigation of the output document to be more manageable.
+
+%------------------------------------------Save Progress-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Save Progress}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.
+The grader does not want to be expected to complete grading the entire test all in one sitting. There must be some way for them to save their current progress, and load it back in at a later time.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+The importance of this feature is high. For smaller tests and small number of students it might not be needed, but for large tests with large amounts of students it is a necessity.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The grader wants to save their current progress, so they press a hotkey. The system will save the progress to a file, and change something in the UI to indicate that the save is finished.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall save progress of a partially graded test and allow the user to load it back up again at a later time. The stored data shall be encrypted so only those who can access the document can view and edit the grades.
+
+%------------------------------------------File Security-----------------------------------------------
+
+% [For Each Feature]
+\subsection{File Security}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.
+The final reports given back to students will have the document password locked with something they can unlock it with.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature. 
+This feature is medium-low importance. Reports would still be able to exported and viewed without password locks, the grader would just have to be careful to only send the correct report to each student.
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+The grader is ready to export a given test for the student to receive.
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall secure the generated reports with passwords.
+
+%------------------------------------------Manual Grading-----------------------------------------------
+
+% [For Each Feature]
+\subsection{Manual Grading}
+\subsubsection{Description}
+% Describe the feature and how it fits into the overall product.
+This feature allows users to manually enter grades and comment like other systems and grading that they have experienced before.
+
+\subsubsection{Priority}
+% Describe the relative importance of this feature.
+This is a high priority feature, as it is the backbone that hotkeys will interact with and will improve on. This feature is also important to help introduce users into the workflow provided by PDF Grader.
+
+
+\subsubsection{Stimulus and Response}
+% What event will trigger the feature and how should the system respond.  This
+% is probably an excerpt of a use case. 
+When the comment or grade fields are clicked, the system will accept keyboard output to allow for grading information to be entered.
+
+
+\subsubsection{Functional Requirements}
+% Formally state the functional requirement.
+% The low-level format command shall require authorization by two
+% system-administrators before beginning the low-level format operation.
+The software shall allow for entry of grades and comments manually per question.

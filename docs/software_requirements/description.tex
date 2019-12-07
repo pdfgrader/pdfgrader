@@ -1,0 +1,59 @@
+\section{Overall Description}
+% Describe the product's context in the larger business or industry setting.  Do
+% not include specific features.  Give the reader an understand of how those
+% features fit into the larger setting. 
+%
+PDF Grader is intended to be a program that assists grading large sets of tests.
+It will allow the grader to grade tests faster and more consistently than if they were to grade them manually by hand.
+The graders will also be able to provide students with feedback to their individual test.
+
+\subsection{Product Perspective}
+% How does the product fit in the business larger processes.  How is the user
+% intended to fit the software into their business activities?   Consider
+% including a figure that illustrates these relationships. 
+Our product is a replacement for manual grading that fits inbetween the current workflow of grading each test manually.
+
+\subsection{Product Features}
+% This is a list of high-level description of the functional behavior of the
+% product.  This should give the reader a better understanding of how the formal
+% requirements fit together.
+\begin{itemize}
+    \item Allows for fast grading and concurrent grading on the same paper to speed up grading.
+    \item Allows the user to upload a pdf file to the program, which will then ask for some information about the test format.
+    \item Scroll to the same question for each test so that a single question can be graded for the entire set quickly.
+    \item Asks if there is a rubric that could be "hotkeyed" for speeding up the grading rate per question.
+    \item Generates a set of final results that can be given out to students so that they can see the errors and feedback at the same time.
+\end{itemize}
+%PDF Grader allows for fast grading and concurrent grading on the same paper to speed up grading.
+%It will do so by allowing the user to upload a pdf file to the program, which will then ask for some information about the test format.
+%Using the format information it will be able to scroll to the same question for each test so that a single question can be graded for the entire set quickly.
+%The software will also ask if there is a rubric that could be hotkeyed for speeding up the grading rate per question.
+%After grading has been completed the program will also generate a set of final results that can be given out to students so that they can see the errors and feedback at the same time.
+
+\subsection{User Classes and Characteristics}
+% Describe the different rolls or classes of users.  For each user class,
+% describe the user class's principal characteristics.  For example, unix
+% systems have at least two classes of users: system administrators and
+% operators.
+There are two roles: Main grader and TA. \par 
+The main grader role is the role that will have access to all of the features. \par
+The TA role will have access to all features except being able to generate the results pages and exporting the final graded tests.
+%The main role will have access to all of the features. Another role will have certain features restricted, intended for use by TA's.
+
+\subsection{Operating Environment}
+% What is the expected environment?  For example, the product could be a desktop
+% application with users who work in a formal office environment.  Contrast this
+% with a mobile application for mountain biking that keeps track of GPS locations.
+The product is intended to be used wherever the user has a desktop computer.
+
+\subsection{Design and Implementation Constraints}
+% List an constraints that are part of the project.  For example, health
+% services applications must implement HIPAA regulations.  
+PDF Grader must be runnable in the Linux environment.
+
+\subsection{Assumptions and Dependencies}
+% List assumptions and dependencies that are not formal constraints.  Items in
+% this list will, if changed, will cause a change in the formal requirements in
+% the next section.
+%
+We assume that our client will continue using the Linux environment, and, for the concurrency aspect to function, using a file sharing system.

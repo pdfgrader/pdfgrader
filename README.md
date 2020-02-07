@@ -21,3 +21,8 @@ https://www.msys2.org/
 
 Package installation syntax is a little different with MSYS2 but is the same idea
 https://github.com/msys2/msys2/wiki/Using-packages
+
+Other helpful links
+https://help.ubuntu.com/community/Vala
+https://github.com/gerito1/vala-gtk-examples
+https://valadoc.org/glib-2.0/GLib.Test.html

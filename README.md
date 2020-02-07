@@ -11,7 +11,7 @@ Scripts: These scripts are designed for linux based systems
 
   pdfgrader/program/maintain.sh is a script meant to build pdfgrader with make, then create a tar distribution
 
-pdfgrader/program/Makefile.am is the Makefile that autotools uses. <**Here you can see a full list of dependencies and pagage names.**>
+pdfgrader/program/Makefile.am is the Makefile that autotools uses. **Here you can see a full list of dependencies and pagage names.**
 
 Package names and commands to install dependencies will depend on what flavor of linux you are using or emulating. 
 

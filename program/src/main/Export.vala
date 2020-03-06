@@ -34,7 +34,7 @@ public class Export : Object
     private static string percentageToPrettyString(double percentage)
     {
         int leftPart = (int)(percentage*100);
-        int rightPart = (int)GLib.Math.round(percentage*10000) % 100;
+        int rightPart = 0;//(int)GLib.Math.round(percentage*10000) % 100;
 
         return leftPart.to_string() + "." + rightPart.to_string();
     }

@@ -1,4 +1,4 @@
-# PDFGRADER
+# PDF GRADER 2.0
 
 
 Getting Started:

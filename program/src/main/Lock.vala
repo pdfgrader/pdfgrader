@@ -1,17 +1,18 @@
-public class Lock  {
+public class Lock {
 
-    private static int currentQNum = 0;
+    private static int current_question_number = 0;
 
-    //returns 0 if switched to new question
-    public static int attemptSwitch(string path, int qNum) {
-        File lockFile = File.new_for_path(path + "/.lock/Q" + qNum.to_string() + ".lock");
+    // returns 0 if switched to new question
+    public static int attempt_switch(string path, int q_num) {
+        File lock_file = File.new_for_path(path + "/.lock/Q" + q_num.to_string() + ".lock");
         try {
-            lockFile.create(FileCreateFlags.NONE);
-            FileOutputStream stream = lockFile.append_to(FileCreateFlags.NONE);
+            lock_file.create(FileCreateFlags.NONE);
+            FileOutputStream stream = lock_file.append_to(FileCreateFlags.NONE);
+            // Write a period to show one program has the corresponding question open
             stream.write({46});
             stream.close();
-            releaseLock(File.new_for_path(path + "/.lock/Q" + currentQNum.to_string() + ".lock"));
-            currentQNum = qNum;
+            release_lock(File.new_for_path(path + "/.lock/Q" + current_question_number.to_string() + ".lock"));
+            current_question_number = q_num;
             return 0;
         } catch (IOError.EXISTS e) {
             return -1;
@@ -20,17 +21,16 @@ public class Lock  {
         }
     }
 
-    private static int releaseLock(File oldFile) {     
+    private static int release_lock(File old_file) {     
             try {
                 uint8[] contents;
-                if (GLib.FileUtils.get_data(oldFile.get_path(), out contents)) {
+                if (GLib.FileUtils.get_data(old_file.get_path(), out contents)) {
                     var locks = contents.length; 
                     if (locks == 1) {
-                        oldFile.delete();
+                        old_file.delete();
                     } else {
-                        locks--;
-                        contents = contents[0 : locks];
-                        GLib.FileUtils.set_data(oldFile.get_path(), contents);
+                        contents = contents[0 : locks - 1];
+                        GLib.FileUtils.set_data(old_file.get_path(), contents);
                     }
                 } 
                 return 0;
@@ -39,18 +39,19 @@ public class Lock  {
             }
     }
 
-    public static int closeFile(string path, int qNum) {
-        return releaseLock(File.new_for_path(path + "/.lock/Q" + qNum.to_string() + ".lock"));
+    public static int close_file(string path, int q_num) {
+        return release_lock(File.new_for_path(path + "/.lock/Q" + q_num.to_string() + ".lock"));
     }
 
-    public static int lockAgain(string path, int qNum) {
-        releaseLock(File.new_for_path(path + "/.lock/Q" + currentQNum.to_string() + ".lock"));
-        File file = File.new_for_path(path + "/.lock/Q" + qNum.to_string() + ".lock");
+    public static int lock_again(string path, int q_num) {
+        release_lock(File.new_for_path(path + "/.lock/Q" + current_question_number.to_string() + ".lock"));
+        File file = File.new_for_path(path + "/.lock/Q" + q_num.to_string() + ".lock");
         try {
             FileOutputStream stream = file.append_to(FileCreateFlags.NONE);
+            // Write a period to show another program has the corresponding question open
             stream.write({46});
             stream.close();
-            currentQNum = qNum;
+            current_question_number = q_num;
             return 0;
         } catch (Error e) {
             return -1;

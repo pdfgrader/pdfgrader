@@ -2,7 +2,7 @@
 
 ## Getting Started:
 
-https://valadoc.org/
+[Valadoc](https://valadoc.org/)
 
 Scripts: These scripts are designed for linux based systems
 - pdfgrader/program/installDependencies.sh is a script that should install the required libraries which are vala, valac, poppler (pdf library), and gee (list and object library), gtk, and libxml
@@ -46,14 +46,14 @@ and their bodies should start on the following line
 
 - There should not be any trailing spaces
 
+- There should be a space between `//` and the start of the comment
+
 ### Naming:
 
 - Variable names should reflect what they will be used for, easily understandable and in
 
 - Follow Vala conventions for naming identifiers.
 
-	- Variables and class fields are lowercase_with_underscores.
+	- Variables, methods and class fields are lowercase_with_underscores.
 
 	- Namespaces and class names are CamelCased.
-
-	- Method names are all lowercase and use underscores to separate words

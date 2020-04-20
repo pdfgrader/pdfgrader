@@ -56,4 +56,4 @@ and their bodies should start on the following line
 
 	- Variables, methods and class fields are lowercase_with_underscores.
 
-	- Namespaces and class names are CamelCased.
+	- Namespaces and class names are Pascal Cased.

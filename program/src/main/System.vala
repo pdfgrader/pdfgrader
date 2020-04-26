@@ -14,6 +14,7 @@ public class System
     public static int currentQuestion = -1; //which question is the grader currently viewing/grading?
     public static int currentTest = 0; //which exam number is the grader currently working on?
     public static bool isGrading = false; //have we finished setup/are we currently focusing on a particular question?
+    public static Gtk.ProgressBar progressBar; //progress bar for user to view how many questions are graded out of total number of questions
 
     public static Gtk.Grid marksGrid; //the grid that shows all of the current questions marks
     public static bool isBindingNewMarkHotkey = false;
@@ -117,8 +118,9 @@ public class System
             viewPane.pack1(examEventBox, true, false);
 
             //Progress Bar, fit this into the left side too
-            Gtk.ProgressBar progressBar = new Gtk.ProgressBar();
-            progressBar.set_fraction(0.5);
+            progressBar = new Gtk.ProgressBar();
+            progressBar.set_fraction(0);
+            
             viewPane.pack2(progressBar, true, false);
 
             hpaned.pack1(viewPane, true, false);
@@ -132,18 +134,6 @@ public class System
             hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
 
         }
-
-        //set up progress bar
-        /*
-        { 
-            //Progress Bar Test
-            Gtk.ProgressBar progressBar = new Gtk.ProgressBar();
-            progressBar.set_fraction(0.5);
-            var progressPane = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
-            progressPane.pack2(progressBar, true, false);
-            window.add(progressPane);
-        }
-        */
         
         window.show_all();
     }
@@ -223,6 +213,9 @@ public class System
         var questionSet = examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
         var currQuestion = questionSet.getQuestions().get(currentTest); //the specific student's test question
         var pool = questionSet.rubricPool;
+
+        progressBar.set_fraction(5/10); //TEST
+
         
         int i = 0;
         foreach (Mark mark in pool.values)
@@ -313,6 +306,8 @@ public class System
         var currQuestion = questionSet.getQuestions().get(currentTest); //the specific student's test question
         var questionActiveMarks = currQuestion.getMarks();
         
+        progressBar.set_fraction(currentTest/2); //PROGRESS_BAR_TEST
+
         var mark = btn.mark;
         
         if (btn.get_active()) //the checkbox is now checked, so add the mark to the question's mark list
@@ -757,7 +752,9 @@ public class System
         }
 
         // load the new question from the file.
-        QuestionSet nextQuestion;
+        QuestionSet nextQuestion; //note 1- update progress bar here
+        progressBar.set_fraction(9/10); //PROGRESS_BAR_TEST
+
         try
         {
             int returnVal = Save.fileImport(qNum, examImage.getNumPDFPages()/examPagesPerTest, out nextQuestion, PDFPath, true);

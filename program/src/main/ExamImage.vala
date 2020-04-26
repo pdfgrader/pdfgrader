@@ -1,6 +1,6 @@
 //Class that handles all of the rendering of a pdf document page.
 //First, you create an object, and load in a PDF file to it,
-// then you can call renderNewPage and getImage.
+//then you can call renderNewPage and getImage.
 public class ExamImage
 {
     private bool pdfIsLoaded = false;

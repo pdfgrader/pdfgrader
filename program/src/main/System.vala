@@ -40,17 +40,14 @@ public class System
     }
 
     //sets up gtk stuff
-    private static void initUI()
-    {
+    private static void initUI() { 
         var window = new Gtk.Window();
         mainWindow = window;
         window.set_title("PDF Grader");
-        try
-        {
+        try { 
             window.set_icon_from_file("res/icon.png");
         }
-        catch (GLib.Error e)
-        {
+        catch (GLib.Error e) { 
             print("Warning: Could not load 'res/icon.png'");
             print(e.message);
             print("\n");
@@ -101,9 +98,10 @@ public class System
             var menuItemQuestion = new Gtk.MenuItem.with_label("Question");
             menuItemQuestion.set_submenu(menuQuestion);
             menuBar.append(menuItemQuestion);
+
         }
         
-        
+
         //setup window area UI
         {
             //setup the exam view on left, and tools on right
@@ -111,11 +109,20 @@ public class System
             hpaned.set_size_request(800, 400); //minimum size of entire window content
             menuPane.pack2(hpaned, true, false);
             
-            //left side: exam view
+            //left side: exam view AND progressBar?
+            var viewPane = new Gtk.Paned(Gtk.Orientation.VERTICAL);
             examEventBox = new Gtk.EventBox(); //event box to wrap the image around
             examImage = new ExamImage(); //the image that goes in the exam frame
             examEventBox.add(examImage.getImage()); //wrap the Gtk.Image inside of an EventBox, in order to get callbacks
-            hpaned.pack1(examEventBox, true, false);
+            viewPane.pack1(examEventBox, true, false);
+
+            //Progress Bar, fit this into the left side too
+            Gtk.ProgressBar progressBar = new Gtk.ProgressBar();
+            progressBar.set_fraction(0.5);
+            viewPane.pack2(progressBar, true, false);
+
+            hpaned.pack1(viewPane, true, false);
+
             
             //right side: marks + cgi + hotkeys
             marksGrid = new Gtk.Grid();
@@ -123,13 +130,25 @@ public class System
             marksGrid.set_column_spacing(5);
             marksGrid.set_size_request(100, -1); //100 = minimum width
             hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
+
         }
+
+        //set up progress bar
+        /*
+        { 
+            //Progress Bar Test
+            Gtk.ProgressBar progressBar = new Gtk.ProgressBar();
+            progressBar.set_fraction(0.5);
+            var progressPane = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+            progressPane.pack2(progressBar, true, false);
+            window.add(progressPane);
+        }
+        */
         
         window.show_all();
     }
 
-    private static void initCallbacks()
-    {
+    private static void initCallbacks() { 
         mainWindow.key_press_event.connect(examImage.onKeyPressed);
         mainWindow.key_release_event.connect(examImage.onKeyReleased);
         examEventBox.button_press_event.connect(examImage.onMouseClick);

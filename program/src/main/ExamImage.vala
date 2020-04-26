@@ -248,6 +248,10 @@ public class ExamImage
                             System.currentTest--;
                             System.refreshMarkViewCheckboxes();
                             this.renderPageWithQuestionFocus();
+
+                            //Update progress bar with the progress on the current question
+                            System.progressBar.set_fraction(((double) System.currentTest)/(document.get_n_pages()/System.examPagesPerTest));
+
                         }
                         return true;
                     }
@@ -261,6 +265,10 @@ public class ExamImage
                             System.currentTest++;
                             System.refreshMarkViewCheckboxes();
                             this.renderPageWithQuestionFocus();
+
+                            //Update progress bar with the progress on the current question
+                            System.progressBar.set_fraction(((double) System.currentTest)/(document.get_n_pages()/System.examPagesPerTest));
+
                         }
                         return true;
                     }

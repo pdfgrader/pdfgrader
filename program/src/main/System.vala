@@ -110,19 +110,17 @@ public class System
             hpaned.set_size_request(800, 400); //minimum size of entire window content
             menuPane.pack2(hpaned, true, false);
             
-            //left side: exam view AND progressBar?
+            //ViewPane is left side pane featuring examEventBox and Progressbar
             var viewPane = new Gtk.Paned(Gtk.Orientation.VERTICAL);
             examEventBox = new Gtk.EventBox(); //event box to wrap the image around
             examImage = new ExamImage(); //the image that goes in the exam frame
             examEventBox.add(examImage.getImage()); //wrap the Gtk.Image inside of an EventBox, in order to get callbacks
             viewPane.pack1(examEventBox, true, false);
 
-            //Progress Bar, fit this into the left side too
+            //Progress Bar init and pack into left side viewPane under the examEventBox
             progressBar = new Gtk.ProgressBar();
             progressBar.set_fraction(0);
-            
             viewPane.pack2(progressBar, true, false);
-
             hpaned.pack1(viewPane, true, false);
 
             
@@ -214,8 +212,6 @@ public class System
         var currQuestion = questionSet.getQuestions().get(currentTest); //the specific student's test question
         var pool = questionSet.rubricPool;
 
-        progressBar.set_fraction(5/10); //TEST
-
         
         int i = 0;
         foreach (Mark mark in pool.values)
@@ -305,8 +301,6 @@ public class System
         var questionSet = examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
         var currQuestion = questionSet.getQuestions().get(currentTest); //the specific student's test question
         var questionActiveMarks = currQuestion.getMarks();
-        
-        progressBar.set_fraction(currentTest/2); //PROGRESS_BAR_TEST
 
         var mark = btn.mark;
         
@@ -752,8 +746,7 @@ public class System
         }
 
         // load the new question from the file.
-        QuestionSet nextQuestion; //note 1- update progress bar here
-        progressBar.set_fraction(9/10); //PROGRESS_BAR_TEST
+        QuestionSet nextQuestion; 
 
         try
         {

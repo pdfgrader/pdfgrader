@@ -110,18 +110,18 @@ public class System
             hpaned.set_size_request(800, 400); //minimum size of entire window content
             menuPane.pack2(hpaned, true, false);
             
-            //ViewPane is left side pane featuring examEventBox and progress_bar
-            var viewPane = new Gtk.Paned(Gtk.Orientation.VERTICAL);
+            //view_pane is left side pane featuring examEventBox and progress_bar
+            var view_pane = new Gtk.Paned(Gtk.Orientation.VERTICAL);
             examEventBox = new Gtk.EventBox(); //event box to wrap the image around
             examImage = new ExamImage(); //the image that goes in the exam frame
             examEventBox.add(examImage.getImage()); //wrap the Gtk.Image inside of an EventBox, in order to get callbacks
-            viewPane.pack1(examEventBox, true, false);
+            view_pane.pack1(examEventBox, true, false);
 
-            //Progress Bar init and pack into left side viewPane under the examEventBox
+            //Progress Bar init and pack into left side view_pane under the examEventBox
             progress_bar = new Gtk.ProgressBar();
             progress_bar.set_fraction(0);
-            viewPane.pack2(progress_bar, true, false);
-            hpaned.pack1(viewPane, true, false);
+            view_pane.pack2(progress_bar, true, false);
+            hpaned.pack1(view_pane, true, false);
 
             
             //right side: marks + cgi + hotkeys

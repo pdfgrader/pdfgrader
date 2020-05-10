@@ -1,7 +1,6 @@
 using Xml;
 using Gee;
 
-
 public class QuestionSet : Object{
     public int questionNum; // question number
     public double totalPoints; // total points possible

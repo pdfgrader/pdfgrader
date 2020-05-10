@@ -9,6 +9,7 @@ pdfgrader_LDADD = $(pdfgrader_LIBS)
 pdfgrader_VALAFLAGS = --pkg=gtk+-3.0 --pkg=poppler-glib --pkg cairo --pkg gee-0.8 --pkg glib-2.0 --pkg libxml-2.0 --pkg posix
 
 pdfgrader_SOURCES = src/main/System.vala \
+    	src/main/ExamImage.vala \
 	src/main/Export.vala \
 	src/main/Mark.vala \
 	src/main/QuestionSet.vala \

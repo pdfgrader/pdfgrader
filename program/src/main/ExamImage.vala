@@ -250,7 +250,7 @@ public class ExamImage
                             this.renderPageWithQuestionFocus();
 
                             //Update progress bar with the progress on the current question
-                            System.progressBar.set_fraction(((double) System.currentTest)/(document.get_n_pages()/System.examPagesPerTest));
+                            System.progress_bar.set_fraction(((double) System.currentTest)/(document.get_n_pages()/System.examPagesPerTest));
 
                         }
                         return true;
@@ -267,7 +267,7 @@ public class ExamImage
                             this.renderPageWithQuestionFocus();
 
                             //Update progress bar with the progress on the current question
-                            System.progressBar.set_fraction(((double) System.currentTest)/(document.get_n_pages()/System.examPagesPerTest));
+                            System.progress_bar.set_fraction(((double) System.currentTest)/(document.get_n_pages()/System.examPagesPerTest));
 
                         }
                         return true;

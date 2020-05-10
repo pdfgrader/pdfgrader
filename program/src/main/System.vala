@@ -14,7 +14,7 @@ public class System
     public static int currentQuestion = -1; //which question is the grader currently viewing/grading?
     public static int currentTest = 0; //which exam number is the grader currently working on?
     public static bool isGrading = false; //have we finished setup/are we currently focusing on a particular question?
-    public static Gtk.ProgressBar progressBar; //progress bar for user to view how many questions are graded out of total number of questions
+    public static Gtk.ProgressBar progress_bar; //progress bar for user to view how many questions are graded out of total number of questions
 
     public static Gtk.Grid marksGrid; //the grid that shows all of the current questions marks
     public static bool isBindingNewMarkHotkey = false;
@@ -110,7 +110,7 @@ public class System
             hpaned.set_size_request(800, 400); //minimum size of entire window content
             menuPane.pack2(hpaned, true, false);
             
-            //ViewPane is left side pane featuring examEventBox and Progressbar
+            //ViewPane is left side pane featuring examEventBox and progress_bar
             var viewPane = new Gtk.Paned(Gtk.Orientation.VERTICAL);
             examEventBox = new Gtk.EventBox(); //event box to wrap the image around
             examImage = new ExamImage(); //the image that goes in the exam frame
@@ -118,9 +118,9 @@ public class System
             viewPane.pack1(examEventBox, true, false);
 
             //Progress Bar init and pack into left side viewPane under the examEventBox
-            progressBar = new Gtk.ProgressBar();
-            progressBar.set_fraction(0);
-            viewPane.pack2(progressBar, true, false);
+            progress_bar = new Gtk.ProgressBar();
+            progress_bar.set_fraction(0);
+            viewPane.pack2(progress_bar, true, false);
             hpaned.pack1(viewPane, true, false);
 
             

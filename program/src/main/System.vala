@@ -131,6 +131,46 @@ public class System
             marksGrid.set_size_request(100, -1); //100 = minimum width
             hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
 
+            //Tenative actionbar test
+
+            var actionbar = new Gtk.ActionBar();
+            actionbar.set_hexpand(true);
+
+            var label = new Gtk.Label("Question 1");
+            label.set_line_wrap(true);
+            label.set_size_request(96, -1); //lmfao idk i just copied this 
+            actionbar.pack_start(label);
+
+            var check = new Gtk.CheckButton.with_label("Test label");
+            check.set_size_request(24, -1);
+            actionbar.pack_end(check);
+
+            var value_entry = new Gtk.Entry();
+            value_entry.set_visibility(true);
+            actionbar.pack_end(value_entry);
+
+            marksGrid.attach(actionbar,0,0);
+
+            //Tenative actionbar1 test
+
+            var actionbar1 = new Gtk.ActionBar();
+            actionbar1.set_hexpand(true);
+
+            var label1 = new Gtk.Label("Question 1");
+            label1.set_line_wrap(true);
+            label1.set_size_request(96, -1); //lmfao idk i just copied this 
+            actionbar1.pack_start(label1);
+
+            var check1 = new Gtk.CheckButton.with_label("Test label");
+            check1.set_size_request(24, -1);
+            actionbar1.pack_end(check1);
+
+            var value_entry2 = new Gtk.Entry();
+            value_entry2.set_visibility(true);
+            actionbar1.pack_end(value_entry2);
+
+            marksGrid.attach(actionbar1,0,1);
+
         }
         
         window.show_all();
@@ -558,10 +598,15 @@ public class System
 
         dialogWindow.set_title(title);
 
+        //Sets the response of the default widget to OK so that we can proceed by hitting enter
+        dialogWindow.set_default_response(Gtk.ResponseType.OK);
+
         var dialogBox = dialogWindow.get_content_area();
         var userEntry = new Gtk.Entry();
         userEntry.set_visibility(true);
         userEntry.set_size_request(250, 0);
+        //Makes it so that pressing enter will activate the window's defualte response, set to OK
+        userEntry.set_activates_default(true);
         dialogBox.pack_end(userEntry, false, false, 0);
 
         dialogWindow.show_all();

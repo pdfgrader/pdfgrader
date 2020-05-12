@@ -23,7 +23,7 @@ public class ExamImage
     
     //variables used when setting up a new exam project
     // (calculating bounds of each question)
-    private bool isSettingUpBounds = false;
+    private bool is_setting_up_bounds = false;
     private bool isNameBoundsSet = false;
     private int currentQuestionSetup = 1;
     //variables that represent the current bounds that the user has 
@@ -100,22 +100,22 @@ public class ExamImage
     
     public void startQuestionSetup()
     {
-        this.isSettingUpBounds = true;
+        this.is_setting_up_bounds = true;
         this.currentQuestionSetup = 1;
-        var dialogWindow = new Gtk.MessageDialog(
+        var dialog_window = new Gtk.MessageDialog(
                 System.mainWindow,
                 Gtk.DialogFlags.MODAL,
                 Gtk.MessageType.INFO,
                 Gtk.ButtonsType.OK,
                 "Draw the bounds for each question. Press Enter to confirm bounds and move to next question.");
                            
-        dialogWindow.set_title("Instructions");
+        dialog_window.set_title("Instructions");
         
-        dialogWindow.show_all();
-        dialogWindow.run();
+        dialog_window.show_all();
+        dialog_window.run();
         
-        dialogWindow.close();
-        dialogWindow.destroy();
+        dialog_window.close();
+        dialog_window.destroy();
     }
     
     private void initImage()
@@ -370,7 +370,7 @@ public class ExamImage
                 
                 case Gdk.Key.Return:
                 {
-                    if (this.isSettingUpBounds)
+                    if (this.is_setting_up_bounds)
                     {
                         double[] bounds = new double[4];
                         bounds[0] = coordsClickStartX;
@@ -418,23 +418,11 @@ public class ExamImage
                             dialogWindow.close();
                             dialogWindow.destroy();
                             
-                            this.isSettingUpBounds = false;
+                            this.is_setting_up_bounds = false;
                             this.currentQuestionSetup = 0;
 
                             Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
                             Save.saveAll(System.PDFPath, System.examQuestionSet);
-
-                            
-                            //remove all questions from memory except question 1
-                            //int size = System.examQuestionSet.size;
-                            //for (int i = size - 1; i >= 0; i--) {
-                            //    stdout.printf("i: %d\n", i);
-                            //    if (i != 1) {
-                            //        System.examQuestionSet.remove_at(i);
-                            //    }        
-                            //}
-                            //stdout.printf("%d\n" ,System.examQuestionSet.size);
-                            
                             
                             System.isGrading = true;
                             System.currentQuestion = -1;

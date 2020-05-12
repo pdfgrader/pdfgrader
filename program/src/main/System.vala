@@ -131,45 +131,34 @@ public class System
             marksGrid.set_size_request(100, -1); //100 = minimum width
             hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
 
-            //Tenative actionbar test
+            //Name Bar test
+            var name_bar = new Gtk.ActionBar();
+            name_bar.set_hexpand(true);
 
-            var actionbar = new Gtk.ActionBar();
-            actionbar.set_hexpand(true);
+            var name_radio = new Gtk.RadioButton.with_label(null, "Set Name Bounds");
+            name_bar.pack_start(name_radio);
 
-            var label = new Gtk.Label("Question 1");
-            label.set_line_wrap(true);
-            label.set_size_request(96, -1); //lmfao idk i just copied this 
-            actionbar.pack_start(label);
+            marksGrid.attach(name_bar,0,0);
 
-            var check = new Gtk.CheckButton.with_label("Test label");
-            check.set_size_request(24, -1);
-            actionbar.pack_end(check);
+            //Question bounds
 
-            var value_entry = new Gtk.Entry();
-            value_entry.set_visibility(true);
-            actionbar.pack_end(value_entry);
+            var question = new Gtk.ActionBar();
+            question.set_hexpand(true);
 
-            marksGrid.attach(actionbar,0,0);
+            var question_radio = new Gtk.RadioButton.with_label_from_widget(name_radio, "Question 1");
+            question.pack_start(question_radio);
 
-            //Tenative actionbar1 test
+            var value_label = new Gtk.Label("Point Value:");
+            value_label.set_line_wrap(true);
+            //value_label.set_size_request(-1,-1); //hori, then verti
+            question.pack_start(value_label);
 
-            var actionbar1 = new Gtk.ActionBar();
-            actionbar1.set_hexpand(true);
+            var value = new Gtk.Entry();
+            value.set_visibility(true);
+            question.pack_end(value);
 
-            var label1 = new Gtk.Label("Question 1");
-            label1.set_line_wrap(true);
-            label1.set_size_request(96, -1); //lmfao idk i just copied this 
-            actionbar1.pack_start(label1);
+            marksGrid.attach(question,0,1);
 
-            var check1 = new Gtk.CheckButton.with_label("Test label");
-            check1.set_size_request(24, -1);
-            actionbar1.pack_end(check1);
-
-            var value_entry2 = new Gtk.Entry();
-            value_entry2.set_visibility(true);
-            actionbar1.pack_end(value_entry2);
-
-            marksGrid.attach(actionbar1,0,1);
 
         }
         

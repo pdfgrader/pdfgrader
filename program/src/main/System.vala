@@ -7,6 +7,9 @@ public class System
     public static Gee.ArrayList<QuestionSet> examQuestionSet; //the master list of all QuestionSets for the current exam
     public static int examPagesPerTest = 0;
     public static int examQuestionsPerTest = 0;
+
+    public static int question_incrementer = 1; //For the purpose of testing new set up process. Will remove and replace with examQuestionsPerTest
+
     public static string password = "garbage";
     public static string PDFPath;
     
@@ -19,6 +22,8 @@ public class System
     public static Gtk.Grid marksGrid; //the grid that shows all of the current questions marks
     public static bool isBindingNewMarkHotkey = false;
     public static MarkViewHotkeyButton markHotkeyButton;
+
+    public static Gtk.RadioButton name_radio; //Radio button with name, needs to be global so other radio buttons can be added to the set of radio buttons
     
     private System(){}
 
@@ -135,30 +140,12 @@ public class System
             var name_bar = new Gtk.ActionBar();
             name_bar.set_hexpand(true);
 
-            var name_radio = new Gtk.RadioButton.with_label(null, "Set Name Bounds");
+            name_radio = new Gtk.RadioButton.with_label(null, "Set Name Bounds");
             name_bar.pack_start(name_radio);
 
             marksGrid.attach(name_bar,0,0);
 
             //Question bounds
-
-            var question = new Gtk.ActionBar();
-            question.set_hexpand(true);
-
-            var question_radio = new Gtk.RadioButton.with_label_from_widget(name_radio, "Question 1");
-            question.pack_start(question_radio);
-
-            var value_label = new Gtk.Label("Point Value:");
-            value_label.set_line_wrap(true);
-            //value_label.set_size_request(-1,-1); //hori, then verti
-            question.pack_start(value_label);
-
-            var value = new Gtk.Entry();
-            value.set_visibility(true);
-            question.pack_end(value);
-
-            marksGrid.attach(question,0,1);
-
 
         }
         
@@ -814,6 +801,34 @@ public class System
         refreshMarksView();
         
         examImage.renderPageWithQuestionFocus();
+    }
+
+    // Function to create new question during the setup process
+    // Creates the actionbar that will show up on the marksGrid during the setup process
+    // Called from examImage during the setup process, under keypress event n 
+    public static void addNewQuestion() { 
+            var question = new Gtk.ActionBar();
+            question.set_hexpand(true);
+
+            // Makes a new radio button widget in the group of the name_radio radio button
+            var question_radio = new Gtk.RadioButton.with_label_from_widget(name_radio, "Question " + question_incrementer.to_string() );
+            question.pack_start(question_radio);
+
+            var value_label = new Gtk.Label("Point Value:");
+            value_label.set_line_wrap(true);
+            //value_label.set_size_request(-1,-1); //hori, then verti
+            question.pack_start(value_label);
+
+            var value = new Gtk.Entry();
+            value.set_visibility(true);
+            question.pack_end(value);
+
+            marksGrid.attach(question, 0, question_incrementer);
+
+            question_incrementer++;
+            stdout.printf("questions now: " + question_incrementer.to_string());
+
+            mainWindow.show_all();
     }
 
     //searches the current questionset mark map to see if any of the marks

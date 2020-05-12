@@ -107,9 +107,9 @@ public class ExamImage
                 Gtk.DialogFlags.MODAL,
                 Gtk.MessageType.INFO,
                 Gtk.ButtonsType.OK,
-                "Draw the bounds for each question. Press Enter to confirm bounds and move to next question.");
+                "Draw the bounds for the selected question. Press n to set up a new question and enter to confirm bounds. Press q to finish the setup process.");
                            
-        dialog_window.set_title("Instructions");
+        dialog_window.set_title("Instructions - Setup Start");
         
         dialog_window.show_all();
         dialog_window.run();
@@ -364,6 +364,17 @@ public class ExamImage
                         this.currentScale-=0.15;
                         this.currentScale = double.max(this.currentScale, 0.3);
                         this.refreshCurrentPage();
+                    }
+                    break;
+                }
+
+                case Gdk.Key.n: 
+                { 
+                    if (this.is_setting_up_bounds) { 
+
+                        System.addNewQuestion();
+
+                        stdout.printf("ur fukin idiot u press n\n");
                     }
                     break;
                 }

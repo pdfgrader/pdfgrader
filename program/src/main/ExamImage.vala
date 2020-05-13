@@ -406,6 +406,7 @@ public class ExamImage
                             QuestionSet new_q = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
                             new_q.addDefaultMarks();
                             System.examQuestionSet.add(new_q);
+
                         } else { 
                             
                             //Case: User is editing a question's bounds from the setup menu - just update the bounds

@@ -153,7 +153,6 @@ public class System
 
             marksGrid.attach(name_bar,0,0);
 
-            //Question bounds
 
         }
         
@@ -849,8 +848,8 @@ public class System
 
         if (button.get_active ()) { 
             state = "on";
+
             //set the active button global to accordingly
-            
             if(button.get_label().contains("Name")) { 
                 active_grading_button = 0; 
             } else { 
@@ -866,7 +865,8 @@ public class System
             print ("\n");
         }
 
-        print (button.get_label().substring(button.get_label().length-1) + " was turned " + state + "\n");
+        //TESTING_CODE
+        //print (button.get_label().substring(button.get_label().length-1) + " was turned " + state + "\n");
     }
 
     //searches the current questionset mark map to see if any of the marks

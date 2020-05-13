@@ -25,6 +25,8 @@ public class System
 
     public static Gtk.RadioButton name_radio; //Radio button with name, needs to be global so other radio buttons can be added to the set of radio buttons
 
+    public static int active_grading_button = 0; //The question number of the radio button that is currently selected. 0 means name is selected
+
     
     private System(){}
 
@@ -141,7 +143,7 @@ public class System
             var name_bar = new Gtk.ActionBar();
             name_bar.set_hexpand(true);
 
-            name_radio = new Gtk.RadioButton.with_label(null, "Set Name Bounds");
+            name_radio = new Gtk.RadioButton.with_label(null, "Name Bounds");
 
             //Connect the signal handlers to the name_radio button
             name_radio.toggled.connect (button_toggled_callback);
@@ -842,15 +844,28 @@ public class System
     // Callback function called whenever a radio button is t r i g g e r e d
     // Taken from gnome-developer site and modified 
     public static void button_toggled_callback (Gtk.ToggleButton button) { 
-        var state = "lmfao idk";
+        var state = "unknown";
 
         if (button.get_active ()) { 
             state = "on";
+            //set the active button global to accordingly
+            
+            if(button.get_label().contains("Name")) { 
+                active_grading_button = 0; 
+            } else { 
+                //Pulls the last character of the label, which should be the question number
+                active_grading_button = button.get_label().substring(button.get_label().length-1).to_int();
+            }
+
+            //TESTING_CODE
+            print ("active button changed to " + active_grading_button.to_string() + "\n");
+
         } else { 
             state = "off";
             print ("\n");
         }
-        print (button.get_label() + " was turned " + state + "\n");
+
+        print (button.get_label().substring(button.get_label().length-1) + " was turned " + state + "\n");
     }
 
     //searches the current questionset mark map to see if any of the marks

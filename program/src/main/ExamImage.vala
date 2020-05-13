@@ -371,10 +371,8 @@ public class ExamImage
                 case Gdk.Key.n: 
                 { 
                     if (this.is_setting_up_bounds) { 
-
+                        // If n is pressed during set up, add new question
                         System.addNewQuestion();
-
-                        stdout.printf("ur fukin idiot u press n\n");
                     }
                     break;
                 }
@@ -393,9 +391,32 @@ public class ExamImage
                         string pointsQuestion = "How much is this question worth?";
                         string pointsTitle = "Instructions";
                         double pointWorth = System.getNumberFromUserPrompt(pointsQuestion, pointsTitle);
-                        QuestionSet newQ = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
-                        newQ.addDefaultMarks();
-                        System.examQuestionSet.add(newQ);
+
+                        //How to check if this question exists or not?
+                        // examQuestionSet at index of the question number exists? 
+
+                        // NOTE: Can also check whether or not active grading button is less than the current number of questions per test 
+
+                        // Check whether or not there exists a question set for the currently selected grading button. 
+                        // If there is (user is editing bounds), add bounds to the question at that index
+                        // If there isn't (it is a new question), 
+                        if ( System.examQuestionSet.get(active_grading_button) == null) { 
+
+                            //Case: There isn't already a question
+                            QuestionSet new_q = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
+                            new_q.addDefaultMarks();
+                            System.examQuestionSet.add(new_q);
+                        } else { 
+                            
+                            //Case: User is editing a question's bounds from the setup menu - just update the bounds
+                            System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
+                            print ("Exam question bounds edited for question " + System.active_grading_button);
+
+                        }
+                        
+                        //QuestionSet newQ = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
+                        //newQ.addDefaultMarks();
+                        //System.examQuestionSet.add(newQ);
                         
                         if (this.currentQuestionSetup < System.examQuestionsPerTest)
                         {

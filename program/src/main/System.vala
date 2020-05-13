@@ -24,6 +24,7 @@ public class System
     public static MarkViewHotkeyButton markHotkeyButton;
 
     public static Gtk.RadioButton name_radio; //Radio button with name, needs to be global so other radio buttons can be added to the set of radio buttons
+
     
     private System(){}
 
@@ -141,6 +142,10 @@ public class System
             name_bar.set_hexpand(true);
 
             name_radio = new Gtk.RadioButton.with_label(null, "Set Name Bounds");
+
+            //Connect the signal handlers to the name_radio button
+            name_radio.toggled.connect (button_toggled_callback);
+
             name_bar.pack_start(name_radio);
 
             marksGrid.attach(name_bar,0,0);
@@ -161,6 +166,7 @@ public class System
         examEventBox.scroll_event.connect(examImage.onScroll);
         mainWindow.destroy.connect(Gtk.main_quit); //when the main window is closed, Gtk returns from its main() call
         GLib.Timeout.add_seconds(30, timerCallback); //every 30 seconds, auto save
+
     }
 
     //sets the umask to 0000, so that files and directories created will be able to be read+written to by 
@@ -812,6 +818,7 @@ public class System
 
             // Makes a new radio button widget in the group of the name_radio radio button
             var question_radio = new Gtk.RadioButton.with_label_from_widget(name_radio, "Question " + question_incrementer.to_string() );
+            question_radio.toggled.connect (button_toggled_callback);
             question.pack_start(question_radio);
 
             var value_label = new Gtk.Label("Point Value:");
@@ -829,6 +836,21 @@ public class System
             stdout.printf("questions now: " + question_incrementer.to_string());
 
             mainWindow.show_all();
+    }
+
+
+    // Callback function called whenever a radio button is t r i g g e r e d
+    // Taken from gnome-developer site and modified 
+    public static void button_toggled_callback (Gtk.ToggleButton button) { 
+        var state = "lmfao idk";
+
+        if (button.get_active ()) { 
+            state = "on";
+        } else { 
+            state = "off";
+            print ("\n");
+        }
+        print (button.get_label() + " was turned " + state + "\n");
     }
 
     //searches the current questionset mark map to see if any of the marks
@@ -917,6 +939,16 @@ public class MarkViewWorthEntry : Gtk.Entry
     public MarkViewWorthEntry(Mark myMark)
     {
         this.mark = myMark;
+    }
+}
+
+//Radio button wrapper that tracks which question number it's in charge of - used primarily during set up 
+// Has to be done this way because the default radio button class sucks
+public class questionRadioButton : Gtk.RadioButton { 
+    public int question_number;
+
+    public questionRadioButton(int question_number) { 
+        this.question_number = question_number;
     }
 }
 

@@ -8,7 +8,7 @@ public class System
     public static int examPagesPerTest = 0;
     public static int examQuestionsPerTest = 0;
 
-    public static int question_incrementer = 1; //For the purpose of testing new set up process. Will remove and replace with examQuestionsPerTest
+    public static int question_incrementer = 0; //For the purpose of testing new set up process. Will remove and replace with examQuestionsPerTest
 
     public static string password = "garbage";
     public static string PDFPath;
@@ -27,9 +27,10 @@ public class System
 
     public static int active_grading_button = 0; //The question number of the radio button that is currently selected. 0 means name is selected
 
-    
-    private System(){}
+    public static Gtk.Label notification_label; //Notification label at the bottom of the marksGrid - updates when changes are made during setup
 
+
+    private System(){}
     
     public static int main(string[] args)
     {
@@ -140,7 +141,7 @@ public class System
             marksGrid.set_size_request(100, -1); //100 = minimum width
             hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
 
-            //Name Bar test
+            //Name Bar 
             var name_bar = new Gtk.ActionBar();
             name_bar.set_hexpand(true);
 
@@ -148,10 +149,15 @@ public class System
 
             //Connect the signal handlers to the name_radio button
             name_radio.toggled.connect (button_toggled_callback);
-
             name_bar.pack_start(name_radio);
-
             marksGrid.attach(name_bar,0,0);
+
+            //Notification Label
+            notification_label = new Gtk.Label("Test");
+
+            marksGrid.attach(notification_label, 0, marksGrid.get_baseline_row());
+            
+
 
 
         }
@@ -819,6 +825,7 @@ public class System
             question.set_hexpand(true);
 
             // Makes a new radio button widget in the group of the name_radio radio button
+            question_incrementer++; // Add a new question
             var question_radio = new Gtk.RadioButton.with_label_from_widget(name_radio, "Question " + question_incrementer.to_string() );
             question_radio.toggled.connect (button_toggled_callback);
             question.pack_start(question_radio);
@@ -834,8 +841,7 @@ public class System
 
             marksGrid.attach(question, 0, question_incrementer);
 
-            question_incrementer++;
-            stdout.printf("questions now: " + question_incrementer.to_string());
+            print("questions now: " + question_incrementer.to_string());
 
             mainWindow.show_all();
     }

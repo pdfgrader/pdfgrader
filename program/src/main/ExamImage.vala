@@ -371,10 +371,32 @@ public class ExamImage
                 case Gdk.Key.n: 
                 { 
                     if (this.is_setting_up_bounds) { 
-                        // If n is pressed during set up, add new question
-                        System.addNewQuestion();
+                        // Prevents user from adding a new question if not all questions have updated bounds. +1 since examQuestionSet includes the name
+                        if(System.examQuestionSet.size == System.question_incrementer+1) { 
+                            System.addNewQuestion();
+                        } else { 
+                            print("ExamImage::[line 378] - examQuestionSet does not equal number of grading bars\n");
+                        }
                     }
                     break;
+                }
+
+                case Gdk.Key.q: 
+                { 
+                    // Done with grading - save everything
+                    
+                    this.is_setting_up_bounds = false;
+                    this.currentQuestionSetup = 0;
+
+                    Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
+                    Save.saveAll(System.PDFPath, System.examQuestionSet);
+                    
+                    System.isGrading = true;
+                    System.currentQuestion = -1;
+                    
+                    //start grading question 1 by default
+                    System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
+
                 }
                 
                 case Gdk.Key.Return:
@@ -395,31 +417,28 @@ public class ExamImage
                         //How to check if this question exists or not?
                         // examQuestionSet at index of the question number exists? 
 
-                        // NOTE: Can also check whether or not active grading button is less than the current number of questions per test 
 
                         // Check whether or not there exists a question set for the currently selected grading button. 
                         // If there is (user is editing bounds), add bounds to the question at that index
                         // If there isn't (it is a new question), 
-                        if ( System.examQuestionSet.get(active_grading_button) == null) { 
+                        if (System.question_incrementer == System.active_grading_button) { 
 
                             //Case: There isn't already a question
                             QuestionSet new_q = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
                             new_q.addDefaultMarks();
                             System.examQuestionSet.add(new_q);
 
-                        } else { 
+                        } else if (System.active_grading_button < System.examQuestionSet.size) { 
                             
                             //Case: User is editing a question's bounds from the setup menu - just update the bounds
                             System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
-                            print ("Exam question bounds edited for question " + System.active_grading_button);
+                            print ("Exam question bounds edited for question " + System.active_grading_button.to_string());
 
+                        } else { 
+                            print ("something went terribly wrong bud \n");
                         }
                         
-                        //QuestionSet newQ = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
-                        //newQ.addDefaultMarks();
-                        //System.examQuestionSet.add(newQ);
-                        
-                        if (this.currentQuestionSetup < System.examQuestionsPerTest)
+                        if (this.question_incrementer < System.examQuestionsPerTest)
                         {
                             var dialogWindow = new Gtk.MessageDialog(
                                     System.mainWindow,

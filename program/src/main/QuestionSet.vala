@@ -38,6 +38,10 @@ public class QuestionSet : Object{
         return rubricPool.get(ID);
     }
 
+    public void set_points(double points) { 
+        this.totalPoints = points;
+    }
+
     public void set_bounds(double[] d){
         this.bounds = d;
     }

@@ -416,7 +416,10 @@ public class System
             createQuestionMenuItems();
             
             examQuestionSet = new Gee.ArrayList<QuestionSet>();
-            examImage.nameSelect();
+
+            // Jump right into question setup - Name counts as Question 0
+            examImage.startQuestionSetup();
+
         }
     }
     
@@ -820,7 +823,7 @@ public class System
     // Function to create new question during the setup process
     // Creates the actionbar that will show up on the marksGrid during the setup process
     // Called from examImage during the setup process, under keypress event n 
-    public static void addNewQuestion() { 
+    public static void add_new_question() { 
             var question = new Gtk.ActionBar();
             question.set_hexpand(true);
 

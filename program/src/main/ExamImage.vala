@@ -3,6 +3,8 @@
 //then you can call renderNewPage and getImage.
 public class ExamImage
 {
+
+    // Variables relating to image rendering
     private bool pdfIsLoaded = false;
     private Poppler.Document document;
     private Gdk.Pixbuf pdfPagePixbufMaxScale; //the pixbuf for the pdf at max scale
@@ -21,17 +23,14 @@ public class ExamImage
     private bool isHoldingCtrl = false; //is the user currently holding the ctrl key?
     private bool isHoldingShft = false; //is the user currently holding the shft key?
     
-    //variables used when setting up a new exam project
-    // (calculating bounds of each question)
+    // Variables used when setting up a new exam project
     private bool is_setting_up_bounds = false;
-    private bool isNameBoundsSet = false;
-    private int currentQuestionSetup = 1;
-    //variables that represent the current bounds that the user has 
+    // Variables that represent the current bounds that the user has 
     // drawn, to save later when the user does a keypress
-    //the coordinates that the user started the click
+    // the coordinates that the user started the click
     private double coordsClickStartX;
     private double coordsClickStartY;
-    //the coordinates theat the user ended the click on
+    //the coordinates that the user ended the click on
     private double coordsClickEndX;
     private double coordsClickEndY;
 
@@ -81,27 +80,8 @@ public class ExamImage
         }
     }
 
-    public void nameSelect()
-    {
-        this.isNameBoundsSet = true;
-        var dialogWindowname = new Gtk.MessageDialog(
-                System.mainWindow,
-                Gtk.DialogFlags.MODAL,
-                Gtk.MessageType.INFO,
-                Gtk.ButtonsType.OK,
-                "Draw the bounds for name space. Press Enter to confirm bounds.");
-        dialogWindowname.set_title("Instructions");
-        dialogWindowname.show_all();
-        dialogWindowname.run();
-        
-        dialogWindowname.close();
-        dialogWindowname.destroy();
-    }
-    
-    public void startQuestionSetup()
-    {
+    public void startQuestionSetup() {
         this.is_setting_up_bounds = true;
-        this.currentQuestionSetup = 1;
         var dialog_window = new Gtk.MessageDialog(
                 System.mainWindow,
                 Gtk.DialogFlags.MODAL,
@@ -118,8 +98,7 @@ public class ExamImage
         dialog_window.destroy();
     }
     
-    private void initImage()
-    {
+    private void initImage() {
         var surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, this.width, this.height);
         var context = new Cairo.Context(surface);
         
@@ -226,12 +205,10 @@ public class ExamImage
                 QuestionSet questionSet = System.examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
                 Question currQuestion = questionSet.getQuestions().get(System.currentTest); 
                 Gee.ArrayList<int> questionActiveMarks = currQuestion.getMarks();
-                if (questionActiveMarks.contains(index))
-                {
+                if (questionActiveMarks.contains(index)) {
                     questionActiveMarks.remove(index);
                 }
-                else 
-                {
+                else {
                     questionActiveMarks.add(index);
                 }
                 System.refreshMarkViewCheckboxes();
@@ -290,8 +267,7 @@ public class ExamImage
                     case Gdk.Key.plus:
                     case Gdk.Key.KP_Add:
                     {
-                        if ((key.state & Gdk.ModifierType.CONTROL_MASK) != 0)
-                        {
+                        if ((key.state & Gdk.ModifierType.CONTROL_MASK) != 0) {
                             this.currentScale+=0.15;
                             this.currentScale = double.min(this.currentScale, ExamImage.MAXSCALE);
                             this.renderPageWithQuestionFocus();
@@ -302,8 +278,7 @@ public class ExamImage
                     case Gdk.Key.minus:
                     case Gdk.Key.KP_Subtract:
                     {
-                        if ((key.state & Gdk.ModifierType.CONTROL_MASK) != 0)
-                        {
+                        if ((key.state & Gdk.ModifierType.CONTROL_MASK) != 0) {
                             this.currentScale-=0.15;
                             this.currentScale = double.max(this.currentScale, 0.3);
                             this.renderPageWithQuestionFocus();
@@ -372,11 +347,11 @@ public class ExamImage
                 { 
                     if (this.is_setting_up_bounds) { 
                         // Prevents user from adding a new question if not all questions have updated bounds. +1 since examQuestionSet includes the name
+
+                        // Actually on second thought Clauson would want the ability to add all the questions at once then go through and select bounds
                         if(System.examQuestionSet.size == System.question_incrementer+1) { 
-                            System.addNewQuestion();
-                        } else { 
-                            print("ExamImage::[line 378] - examQuestionSet does not equal number of grading bars\n");
-                        }
+                            System.add_new_question();
+                        } 
                     }
                     break;
                 }
@@ -386,7 +361,6 @@ public class ExamImage
                     // Done with grading - save everything
                     
                     this.is_setting_up_bounds = false;
-                    this.currentQuestionSetup = 0;
 
                     Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
                     Save.saveAll(System.PDFPath, System.examQuestionSet);
@@ -396,6 +370,8 @@ public class ExamImage
                     
                     //start grading question 1 by default
                     System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
+
+                    break;
 
                 }
                 
@@ -412,7 +388,7 @@ public class ExamImage
                         int numTests = this.document.get_n_pages()/System.examPagesPerTest;
                         string pointsQuestion = "How much is this question worth?";
                         string pointsTitle = "Instructions";
-                        double pointWorth = System.getNumberFromUserPrompt(pointsQuestion, pointsTitle);
+                        //double pointWorth = System.getNumberFromUserPrompt(pointsQuestion, pointsTitle);
 
                         //How to check if this question exists or not?
                         // examQuestionSet at index of the question number exists? 
@@ -424,94 +400,26 @@ public class ExamImage
                         if (System.question_incrementer == System.active_grading_button) { 
 
                             //Case: There isn't already a question
-                            QuestionSet new_q = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
+                            //Initialize new question worth -1 points (points will be updated upon exiting the setup, where all pointvalue entries in the marksGrid are read and the questions are updated 
+                            QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage, numTests);
                             new_q.addDefaultMarks();
                             System.examQuestionSet.add(new_q);
+
+                            //TEST_CODE
+                            print("ExamImage[429]:: Added new question\n");
 
                         } else if (System.active_grading_button < System.examQuestionSet.size) { 
                             
                             //Case: User is editing a question's bounds from the setup menu - just update the bounds
                             System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
-                            print ("Exam question bounds edited for question " + System.active_grading_button.to_string());
+                            print ("ExamImage[436]:: Exam question bounds edited for question " + System.active_grading_button.to_string() + "\n");
 
                         } else { 
-                            print ("something went terribly wrong bud \n");
+                            print ("ExamImage[422]:: Something went terribly wrong with setting bounds \n");
                         }
                         
-                        if (this.question_incrementer < System.examQuestionsPerTest)
-                        {
-                            var dialogWindow = new Gtk.MessageDialog(
-                                    System.mainWindow,
-                                    Gtk.DialogFlags.MODAL,
-                                    Gtk.MessageType.INFO,
-                                    Gtk.ButtonsType.OK,
-                                    "Question "+(this.currentQuestionSetup).to_string()+" complete. Now do question "+(this.currentQuestionSetup+1).to_string());
-                            
-                            dialogWindow.set_title("Question "+(this.currentQuestionSetup).to_string()+" complete");
-                            dialogWindow.show_all();
-                            dialogWindow.run();
-                            dialogWindow.close();
-                            dialogWindow.destroy();
-                            
-                            this.currentQuestionSetup+=1;
-                        }
-                        else
-                        {
-                            var dialogWindow = new Gtk.MessageDialog(
-                                    System.mainWindow,
-                                    Gtk.DialogFlags.MODAL,
-                                    Gtk.MessageType.INFO,
-                                    Gtk.ButtonsType.OK,
-                                    "All questions completed");
-                            
-                            dialogWindow.set_title("All done");
-                            dialogWindow.show_all();
-                            dialogWindow.run();
-                            dialogWindow.close();
-                            dialogWindow.destroy();
-                            
-                            this.is_setting_up_bounds = false;
-                            this.currentQuestionSetup = 0;
-
-                            Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
-                            Save.saveAll(System.PDFPath, System.examQuestionSet);
-                            
-                            System.isGrading = true;
-                            System.currentQuestion = -1;
-                            
-                            //start grading question 1 by default
-                            System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
-                        }
                     }
 
-                    if (this.isNameBoundsSet)
-                    {
-                        double[] bounds = new double[4];
-                        bounds[0] = coordsClickStartX;
-                        bounds[1] = coordsClickStartY;
-                        bounds[2] = coordsClickEndX;
-                        bounds[3] = coordsClickEndY;
-
-                        int numTests = this.document.get_n_pages()/System.examPagesPerTest;
-                        QuestionSet newQ = new QuestionSet(0, 0.0, bounds, 0, numTests);
-                        System.examQuestionSet.add(newQ);
-                        var dialogWindow = new Gtk.MessageDialog(
-                                System.mainWindow,
-                                Gtk.DialogFlags.MODAL,
-                                Gtk.MessageType.INFO,
-                                Gtk.ButtonsType.OK,
-                                "Name space selected");
-                        
-                        dialogWindow.set_title("All done");
-                        dialogWindow.show_all();
-                        dialogWindow.run();
-                        //dialogWindow.close(); //causes an error for some reason, and not needed
-                        dialogWindow.destroy();
-                        
-                        this.isNameBoundsSet = false;
-                        this.currentQuestionSetup = 1;
-                        startQuestionSetup();
-                    }                
                     break;
                 }
                 

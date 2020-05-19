@@ -1,8 +1,7 @@
 //Class that handles all of the rendering of a pdf document page.
 //First, you create an object, and load in a PDF file to it,
 //then you can call renderNewPage and getImage.
-public class ExamImage
-{
+public class ExamImage {
 
     // Variables relating to image rendering
     private bool pdfIsLoaded = false;
@@ -34,8 +33,7 @@ public class ExamImage
     private double coordsClickEndX;
     private double coordsClickEndY;
 
-    public ExamImage()
-    {
+    public ExamImage() {
         this.initImage();
     }
 
@@ -43,15 +41,12 @@ public class ExamImage
         return document.get_n_pages();
     }
     
-    public bool isPdfLoaded()
-    {
+    public bool isPdfLoaded() {
         return this.pdfIsLoaded;
     }
     
-    public void loadPDF(string filename)
-    {
-        if (!this.pdfIsLoaded)
-        {
+    public void loadPDF(string filename) {
+        if (!this.pdfIsLoaded) {
             try
             {
                 this.document = new Poppler.Document.from_file(Filename.to_uri(filename), "");
@@ -348,30 +343,41 @@ public class ExamImage
                     if (this.is_setting_up_bounds) { 
                         // Prevents user from adding a new question if not all questions have updated bounds. +1 since examQuestionSet includes the name
 
-                        // Actually on second thought Clauson would want the ability to add all the questions at once then go through and select bounds
+                        // Done this way because I haven't found a way to reliably check if an object exists within without it just bailing
                         if(System.examQuestionSet.size == System.question_incrementer+1) { 
                             System.add_new_question();
                         } 
+
                     }
                     break;
                 }
 
                 case Gdk.Key.q: 
                 { 
-                    // Done with grading - save everything
-                    
-                    this.is_setting_up_bounds = false;
+                    if (System.verify_bounds_setup()) { 
+                        // Done with grading - save everything
+                        this.is_setting_up_bounds = false;
 
-                    Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
-                    Save.saveAll(System.PDFPath, System.examQuestionSet);
-                    
-                    System.isGrading = true;
-                    System.currentQuestion = -1;
-                    
-                    //start grading question 1 by default
-                    System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
+                        // Update question bounds with the values from the setup entries 
+                        System.update_question_points();
 
-                    break;
+                        // Update examQuestionsPerTest
+                        System.update_number_questions();
+
+                        Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
+                        Save.saveAll(System.PDFPath, System.examQuestionSet);
+                        
+                        System.isGrading = true;
+                        System.currentQuestion = -1;
+                        
+                        //start grading question 1 by default
+                        System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
+
+                        break;
+                    } else { 
+                        print ("Cannot complete setup - you have unfinished bounds");
+                        break;
+                    }
 
                 }
                 
@@ -390,23 +396,30 @@ public class ExamImage
                         string pointsTitle = "Instructions";
                         //double pointWorth = System.getNumberFromUserPrompt(pointsQuestion, pointsTitle);
 
-                        //How to check if this question exists or not?
-                        // examQuestionSet at index of the question number exists? 
-
 
                         // Check whether or not there exists a question set for the currently selected grading button. 
                         // If there is (user is editing bounds), add bounds to the question at that index
-                        // If there isn't (it is a new question), 
+                        // If there isn't (it is a new question), make a new question and throw it in there
+
                         if (System.question_incrementer == System.active_grading_button) { 
 
-                            //Case: There isn't already a question
-                            //Initialize new question worth -1 points (points will be updated upon exiting the setup, where all pointvalue entries in the marksGrid are read and the questions are updated 
-                            QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage, numTests);
-                            new_q.addDefaultMarks();
-                            System.examQuestionSet.add(new_q);
+                            //Edge case for if the user immediately wishes to edit a question bounds before pressing n
+                            if (System.active_grading_button < System.examQuestionSet.size && System.examQuestionSet.size != 0) { 
+                                System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
+                                print("ExamImage:: Exam question bounds for most recent question adjusted\n");
 
-                            //TEST_CODE
-                            print("ExamImage[429]:: Added new question\n");
+
+                            } else { 
+                                
+                                QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage, numTests);
+                                new_q.addDefaultMarks();
+                                System.examQuestionSet.add(new_q);
+                                //DEBUG
+                                print("ExamImage[429]:: Added new question\n");
+
+                                print ("exam question set size = " + System.examQuestionSet.size.to_string() + "\n");
+                                print ("active grading button: " + System.active_grading_button.to_string() + "\n");
+                            }
 
                         } else if (System.active_grading_button < System.examQuestionSet.size) { 
                             
@@ -417,6 +430,7 @@ public class ExamImage
                         } else { 
                             print ("ExamImage[422]:: Something went terribly wrong with setting bounds \n");
                         }
+
                         
                     }
 

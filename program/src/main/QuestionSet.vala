@@ -38,6 +38,15 @@ public class QuestionSet : Object{
         return rubricPool.get(ID);
     }
 
+    //There's probably a better way to do this but I'm new to vala
+    public bool bounds_is_null() { 
+        if (bounds[0] == 0 && bounds[1] == 0 && bounds[2] == 0 && bounds[3] == 0) { 
+            return true;
+        } else { 
+            return false;
+        } 
+    }
+
     public void set_points(double points) { 
         this.totalPoints = points;
     }

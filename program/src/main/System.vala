@@ -1,6 +1,6 @@
 //static class that has main method and some others
-public class System
-{
+public class System {
+
     public static unowned Gtk.Window? mainWindow;
     public static Gtk.EventBox examEventBox;
     public static ExamImage examImage;
@@ -152,14 +152,7 @@ public class System
             name_bar.pack_start(name_radio);
             marksGrid.attach(name_bar,0,0);
 
-            //Notification Label
-            notification_label = new Gtk.Label("Test");
-
-            marksGrid.attach(notification_label, 0, marksGrid.get_baseline_row());
             
-
-
-
         }
         
         window.show_all();
@@ -225,6 +218,7 @@ public class System
         }
         mainWindow.show_all();
     }
+
     
     //when the user selects a new question, call this to refresh which
     // marks are being displayed in the mark view.
@@ -406,14 +400,14 @@ public class System
                 examPagesPerTest = (int)getNumberFromUserPrompt("How many pages per test?", "Enter # pages per test");
             }
 
-            examQuestionsPerTest = -1;
-            while (examQuestionsPerTest < 0)
-            {
-                examQuestionsPerTest = (int)getNumberFromUserPrompt("How many questions per test?", "Enter # questions per test");
-            }
+            //examQuestionsPerTest = -1;
+            //while (examQuestionsPerTest < 0) {
+                //examQuestionsPerTest = (int)getNumberFromUserPrompt("How many questions per test?", "Enter # questions per test");
+            //}
             
             currentQuestion = 0;
-            createQuestionMenuItems();
+            //DEBUG: Move this somewhere else
+            //createQuestionMenuItems();
             
             examQuestionSet = new Gee.ArrayList<QuestionSet>();
 
@@ -844,9 +838,10 @@ public class System
 
             marksGrid.attach(question, 0, question_incrementer);
 
-            print("questions now: " + question_incrementer.to_string());
+            print("Added new question. There are now: " + question_incrementer.to_string() + " questions.\n");
 
             mainWindow.show_all();
+
     }
 
 
@@ -876,6 +871,62 @@ public class System
 
         //TESTING_CODE
         //print (button.get_label().substring(button.get_label().length-1) + " was turned " + state + "\n");
+    }
+
+    // Verifies that there are non-null bounds for each question
+    public static bool verify_bounds_setup() { 
+
+        bool ret_val = true;
+        for(int i = 1; i <= question_incrementer; i++) { 
+            if(examQuestionSet.get(i) == null) { 
+                print ("verify bounds case 1\n");
+                ret_val = false;
+            } else if ( examQuestionSet.get(i).bounds_is_null()) { 
+                // How to tell if bounds are set vs default bounds? 
+                print ("verify bounds case 2\n");
+                ret_val = false;
+            } else { 
+                print ("youre good to go chief\n");
+            }
+        }
+
+        return ret_val;
+    }
+
+    // Updates the total point value for each question based off of the entries in the question setup taskbar on the right
+    // At the time of writing, this is called from the keyhandler for 'q' in ExamImage
+    public static void update_question_points() { 
+
+        //DEBUG
+        print ("System[881] :: Setup process completed by user - updating question point values\n");
+
+        // Get value from the entry for each question in the setup process
+        // Start from 1 since 'Question 0' is the name 
+        for(int i = 1; i <= question_incrementer; i++) { 
+            //Gets the text on the i'th entry and converts it to a double
+            Gtk.ActionBar current_question = (Gtk.ActionBar) marksGrid.get_child_at(0,i);
+
+            var widget = current_question.get_children();
+            Gtk.Entry question_entry = (Gtk.Entry) widget.nth_data(2);
+            double val = double.parse(question_entry.get_text());
+
+            examQuestionSet.get(i).set_points(val);
+            //DEBUG
+            print("Point value for question " + i.to_string() + "updated to: " + val.to_string() + "\n");
+        }
+
+    }
+
+    // Updates examQuestionsPerTest with the current question incrementer, removing the need for a dialog asking the user how many questions there are
+    // Called at end of setup process when user presses q 
+    public static void update_number_questions() { 
+        //DEBUG
+        print ("System[901] :: Question incrementer at " + question_incrementer.to_string() + ". Updating examQuestionsPerTest");
+
+        examQuestionsPerTest = question_incrementer;
+
+        createQuestionMenuItems();
+        
     }
 
     //searches the current questionset mark map to see if any of the marks

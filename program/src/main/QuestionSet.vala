@@ -10,21 +10,31 @@ public class QuestionSet : Object{
     public Gee.ArrayList<Question> questions;
     //private Question currQuestion;
 
-    public QuestionSet(int QNum, double total, double[] b, int pNum, int num){
+    public QuestionSet(int QNum, double total, double[] b, int pNum){
         this.questionNum = QNum;
         this.totalPoints = total;
         this.bounds = b;
         this.pageNum = pNum;
         this.questions = new Gee.ArrayList<Question>();
+        /*
         for(int i = 0; i < num; i++){
             Question q = new Question();
             this.questions.add(q);
         }
+        */
         this.rubricPool = new Gee.HashMap<int, Mark>();
     }
+
+    // Fills question set with new empty questions - HAS to be called before grading starts but can only be called after the number of tests has been determined (aka, end of setup)
+    public void init_question_set(int num) { 
+        for(int i = 0; i < num; i++) { 
+            Question q = new Question();
+            this.questions.add(q);
+        }
+
+    }
     
-    public void addDefaultMarks()
-    {
+    public void addDefaultMarks() {
         this.rubricPool[0] = new Mark(0, -totalPoints, "No points", true);
         this.rubricPool[1] = new Mark(1, -totalPoints/2, "Half points", true);
         this.rubricPool[2] = new Mark(2, 0.0, "Full points", true);

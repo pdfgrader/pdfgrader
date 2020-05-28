@@ -164,7 +164,8 @@ public class Save
                 case "totalPoints":
                     totalPoints = int.parse(reader.get_attribute("points"));
                     if (bounds[0] != -1 && bounds[1] != -1 && bounds[2] != -1 && bounds[3] != -1 && pageNum != -1) {
-                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum, numTests);
+                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum);
+                        question.init_question_set(numTests);
                     }
                     next(reader);
                     break;
@@ -175,7 +176,8 @@ public class Save
                     bounds[2] = double.parse(reader.get_attribute("bound3"));
                     bounds[3] = double.parse(reader.get_attribute("bound4"));
                     if (totalPoints != -1 && pageNum != -1) {
-                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum, numTests);
+                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum);
+                        question.init_question_set(numTests);
                     }
                     next(reader);
                     break;
@@ -183,7 +185,8 @@ public class Save
                 case "pageNum":
                     pageNum = int.parse(reader.get_attribute("page"));
                     if (bounds[0] != -1 && bounds[1] != -1 && bounds[2] != -1 && bounds[3] != -1 && totalPoints != -1) {
-                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum, numTests);
+                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum);
+                        question.init_question_set(numTests);
                     }
                     next(reader);
                     break;

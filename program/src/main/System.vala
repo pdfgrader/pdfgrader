@@ -20,6 +20,7 @@ public class System {
     public static Gtk.ProgressBar progress_bar; //progress bar for user to view how many questions are graded out of total number of questions
 
     public static Gtk.Grid marksGrid; //the grid that shows all of the current questions marks
+    public static Gtk.ActionBar page_nums; //Entry box for the value of examPagesPerTest on setup
     public static bool isBindingNewMarkHotkey = false;
     public static MarkViewHotkeyButton markHotkeyButton;
 
@@ -135,23 +136,42 @@ public class System {
 
             
             //right side: marks + cgi + hotkeys
+            var util_pane = new Gtk.Paned(Gtk.Orientation.VERTICAL);
             marksGrid = new Gtk.Grid();
             marksGrid.set_row_spacing(5);
             marksGrid.set_column_spacing(5);
-            marksGrid.set_size_request(100, -1); //100 = minimum width
-            hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
+            marksGrid.set_size_request(100, 500); //100 = minimum width
 
-            //Name Bar 
+
+            //Name Bar setup 
             var name_bar = new Gtk.ActionBar();
             name_bar.set_hexpand(true);
-
             name_radio = new Gtk.RadioButton.with_label(null, "Name Bounds");
 
-            //Connect the signal handlers to the name_radio button
+            //Connect the signal handlers to the name_radio button, then attach the bar to marksGrid
             name_radio.toggled.connect (button_toggled_callback);
             name_bar.pack_start(name_radio);
             marksGrid.attach(name_bar,0,0);
 
+            util_pane.pack1(marksGrid, true, false);
+
+            //Exam Page Input Bar setup
+            page_nums = new Gtk.ActionBar();
+            page_nums.set_hexpand(true);
+
+            var page_num_label = new Gtk.Label("Number of Pages Per Test:");
+            page_num_label.set_line_wrap(true);
+            page_nums.pack_start(page_num_label);
+
+            var num_entry = new Gtk.Entry();
+            num_entry.set_visibility(true);
+            num_entry.set_width_chars(2);
+            page_nums.pack_end(num_entry);
+
+            util_pane.pack2(page_nums, true, false);
+            hpaned.pack2(util_pane, false, false);
+            //OLD:: 
+            //hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
             
         }
         
@@ -394,16 +414,6 @@ public class System {
             examImage.renderNewPage();
             examImage.refreshCurrentPage();
             
-            examPagesPerTest = -1;
-            while (examPagesPerTest < 0)
-            {
-                examPagesPerTest = (int)getNumberFromUserPrompt("How many pages per test?", "Enter # pages per test");
-            }
-
-            //examQuestionsPerTest = -1;
-            //while (examQuestionsPerTest < 0) {
-                //examQuestionsPerTest = (int)getNumberFromUserPrompt("How many questions per test?", "Enter # questions per test");
-            //}
             
             currentQuestion = 0;
             //DEBUG: Move this somewhere else
@@ -921,12 +931,33 @@ public class System {
     // Called at end of setup process when user presses q 
     public static void update_number_questions() { 
         //DEBUG
-        print ("System[901] :: Question incrementer at " + question_incrementer.to_string() + ". Updating examQuestionsPerTest");
+        print ("System[901] :: Question incrementer at " + question_incrementer.to_string() + ". Updating examQuestionsPerTest\n");
 
         examQuestionsPerTest = question_incrementer;
 
+    }
+
+    // Updates the number of pages per test according to the entry box 
+    public static void update_pages_per_test() { 
+        //Set examPagesPerTest equal to the value in the page_nums entry box at the end of setup
+        var widget = page_nums.get_children();
+        Gtk.Entry num_entry = (Gtk.Entry) widget.nth_data(1);
+        int val = int.parse(num_entry.get_text());
+        examPagesPerTest = val;
+        print ("update pages per test: " + examPagesPerTest.to_string() + "\n");
+
+    }
+
+    // Populates all QuestionSets with empty questions
+    public static void update_question_sets(int num_tests) { 
+        // For every question set in the test, fill with empty questions
+        for (int i = 0; i < examQuestionSet.size; i++) { 
+            examQuestionSet.get(i).init_question_set(num_tests);
+        }
+
+        print ("hee haw yee haw: " + examPagesPerTest.to_string() + "\n");
+        //Last step in ending setup - can only be done after examPagesPerTest has been updated
         createQuestionMenuItems();
-        
     }
 
     //searches the current questionset mark map to see if any of the marks

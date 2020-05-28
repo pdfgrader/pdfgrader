@@ -360,9 +360,15 @@ public class ExamImage {
 
                         // Update question bounds with the values from the setup entries 
                         System.update_question_points();
-
                         // Update examQuestionsPerTest
                         System.update_number_questions();
+
+                        // Update examPagesPerTest
+                        System.update_pages_per_test();
+
+                        // Populate QuestionSet with empty questions depending on the number of examQuestionsPerTest 
+                        System.update_question_sets(this.document.get_n_pages()/System.examPagesPerTest);
+
 
                         Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
                         Save.saveAll(System.PDFPath, System.examQuestionSet);
@@ -391,7 +397,7 @@ public class ExamImage {
                         bounds[2] = coordsClickEndX;
                         bounds[3] = coordsClickEndY;
 
-                        int numTests = this.document.get_n_pages()/System.examPagesPerTest;
+                        //int numTests = this.document.get_n_pages()/System.examPagesPerTest;
                         string pointsQuestion = "How much is this question worth?";
                         string pointsTitle = "Instructions";
                         //double pointWorth = System.getNumberFromUserPrompt(pointsQuestion, pointsTitle);
@@ -411,7 +417,7 @@ public class ExamImage {
 
                             } else { 
                                 
-                                QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage, numTests);
+                                QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage);
                                 new_q.addDefaultMarks();
                                 System.examQuestionSet.add(new_q);
                                 //DEBUG

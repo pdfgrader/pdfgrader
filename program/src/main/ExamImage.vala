@@ -343,7 +343,6 @@ public class ExamImage {
                     if (this.is_setting_up_bounds) { 
                         // Prevents user from adding a new question if not all questions have updated bounds. +1 since examQuestionSet includes the name
 
-                        // Done this way because I haven't found a way to reliably check if an object exists within without it just bailing
                         if(System.examQuestionSet.size == System.question_incrementer+1) { 
                             System.add_new_question();
                         } 
@@ -357,18 +356,15 @@ public class ExamImage {
                     if (System.verify_bounds_setup()) { 
                         // Done with grading - save everything
                         this.is_setting_up_bounds = false;
-
                         // Update question bounds with the values from the setup entries 
                         System.update_question_points();
                         // Update examQuestionsPerTest
                         System.update_number_questions();
-
                         // Update examPagesPerTest
                         System.update_pages_per_test();
 
                         // Populate QuestionSet with empty questions depending on the number of examQuestionsPerTest 
                         System.update_question_sets(this.document.get_n_pages()/System.examPagesPerTest);
-
 
                         Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
                         Save.saveAll(System.PDFPath, System.examQuestionSet);
@@ -381,7 +377,7 @@ public class ExamImage {
 
                         break;
                     } else { 
-                        print ("Cannot complete setup - you have unfinished bounds");
+                        print ("ExamImage.vala :: Cannot complete setup - you have unfinished bounds");
                         break;
                     }
 
@@ -414,27 +410,21 @@ public class ExamImage {
                                 System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
                                 print("ExamImage:: Exam question bounds for most recent question adjusted\n");
 
-
                             } else { 
                                 
                                 QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage);
                                 new_q.addDefaultMarks();
                                 System.examQuestionSet.add(new_q);
-                                //DEBUG
-                                print("ExamImage[429]:: Added new question\n");
-
-                                print ("exam question set size = " + System.examQuestionSet.size.to_string() + "\n");
-                                print ("active grading button: " + System.active_grading_button.to_string() + "\n");
                             }
 
                         } else if (System.active_grading_button < System.examQuestionSet.size) { 
                             
                             //Case: User is editing a question's bounds from the setup menu - just update the bounds
                             System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
-                            print ("ExamImage[436]:: Exam question bounds edited for question " + System.active_grading_button.to_string() + "\n");
+                            print ("ExamImage.vala :: Exam question bounds edited for question " + System.active_grading_button.to_string() + "\n");
 
                         } else { 
-                            print ("ExamImage[422]:: Something went terribly wrong with setting bounds \n");
+                            print ("ExamImage.vala :: Something went wrong \n");
                         }
 
                         

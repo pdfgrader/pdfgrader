@@ -137,11 +137,18 @@ public class System {
             
             //right side: marks + cgi + hotkeys
             var util_pane = new Gtk.Paned(Gtk.Orientation.VERTICAL);
+
+            //put marksGrid in scrollable in case of overflow
+            var scroll = new Gtk.ScrolledWindow(null,null);
+            scroll.set_size_request(230,500);
+            scroll.set_propagate_natural_width(true);
+
             marksGrid = new Gtk.Grid();
             marksGrid.set_row_spacing(5);
             marksGrid.set_column_spacing(5);
-            marksGrid.set_size_request(100, 500); //100 = minimum width
+            marksGrid.set_size_request(230, 500); //100 = minimum width
 
+            scroll.add(marksGrid);
 
             //Name Bar setup 
             var name_bar = new Gtk.ActionBar();
@@ -153,9 +160,9 @@ public class System {
             name_bar.pack_start(name_radio);
             marksGrid.attach(name_bar,0,0);
 
-            util_pane.pack1(marksGrid, true, false);
+            util_pane.pack1(scroll, true, false);
 
-            //Exam Page Input Bar setup
+            //Exam Page Number Entry Box setup
             page_nums = new Gtk.ActionBar();
             page_nums.set_hexpand(true);
 
@@ -170,8 +177,6 @@ public class System {
 
             util_pane.pack2(page_nums, true, false);
             hpaned.pack2(util_pane, false, false);
-            //OLD:: 
-            //hpaned.pack2(marksGrid, false, false); //put the vpaned on the right side of the hpaned
             
         }
         
@@ -844,6 +849,7 @@ public class System {
 
             var value = new Gtk.Entry();
             value.set_visibility(true);
+            value.set_width_chars(3);
             question.pack_end(value);
 
             marksGrid.attach(question, 0, question_incrementer);
@@ -867,8 +873,8 @@ public class System {
             if(button.get_label().contains("Name")) { 
                 active_grading_button = 0; 
             } else { 
-                //Pulls the last character of the label, which should be the question number
-                active_grading_button = button.get_label().substring(button.get_label().length-1).to_int();
+                //Pulls the last two characters of the label, which should be the question number
+                active_grading_button = button.get_label().substring(button.get_label().length-2).to_int();
             }
 
             //TESTING_CODE
@@ -879,8 +885,6 @@ public class System {
             print ("\n");
         }
 
-        //TESTING_CODE
-        //print (button.get_label().substring(button.get_label().length-1) + " was turned " + state + "\n");
     }
 
     // Verifies that there are non-null bounds for each question
@@ -888,15 +892,14 @@ public class System {
 
         bool ret_val = true;
         for(int i = 1; i <= question_incrementer; i++) { 
-            if(examQuestionSet.get(i) == null) { 
-                print ("verify bounds case 1\n");
+            if(examQuestionSet.size != question_incrementer+1) { 
+                print ("System.verify_bounds_setup() :: examQuestionSet size isn't equal to question incrementer at " +i.to_string() + "\n");
                 ret_val = false;
             } else if ( examQuestionSet.get(i).bounds_is_null()) { 
-                // How to tell if bounds are set vs default bounds? 
-                print ("verify bounds case 2\n");
+                print ("System.verify_bounds.setup() :: There are null bounds in the examQuestionSet: " + i.to_string() + "\n");
                 ret_val = false;
             } else { 
-                print ("youre good to go chief\n");
+                print ("System.verify_bounds_setup() :: All question bounds are set properly\n");
             }
         }
 
@@ -907,34 +910,28 @@ public class System {
     // At the time of writing, this is called from the keyhandler for 'q' in ExamImage
     public static void update_question_points() { 
 
-        //DEBUG
-        print ("System[881] :: Setup process completed by user - updating question point values\n");
-
         // Get value from the entry for each question in the setup process
         // Start from 1 since 'Question 0' is the name 
         for(int i = 1; i <= question_incrementer; i++) { 
             //Gets the text on the i'th entry and converts it to a double
             Gtk.ActionBar current_question = (Gtk.ActionBar) marksGrid.get_child_at(0,i);
-
             var widget = current_question.get_children();
             Gtk.Entry question_entry = (Gtk.Entry) widget.nth_data(2);
             double val = double.parse(question_entry.get_text());
 
             examQuestionSet.get(i).set_points(val);
             //DEBUG
-            print("Point value for question " + i.to_string() + "updated to: " + val.to_string() + "\n");
+            print("System.vala :: Point value for question " + i.to_string() + "updated to: " + val.to_string() + "\n");
         }
 
     }
 
     // Updates examQuestionsPerTest with the current question incrementer, removing the need for a dialog asking the user how many questions there are
-    // Called at end of setup process when user presses q 
     public static void update_number_questions() { 
         //DEBUG
         print ("System[901] :: Question incrementer at " + question_incrementer.to_string() + ". Updating examQuestionsPerTest\n");
 
         examQuestionsPerTest = question_incrementer;
-
     }
 
     // Updates the number of pages per test according to the entry box 
@@ -944,7 +941,6 @@ public class System {
         Gtk.Entry num_entry = (Gtk.Entry) widget.nth_data(1);
         int val = int.parse(num_entry.get_text());
         examPagesPerTest = val;
-        print ("update pages per test: " + examPagesPerTest.to_string() + "\n");
 
     }
 

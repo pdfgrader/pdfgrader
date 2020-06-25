@@ -73,7 +73,7 @@ public class Export : Object
         int numStudents = 0;
         if (System.examQuestionSet.size > 0)
         {
-            numStudents = System.examQuestionSet.get(0).questions.size;
+            numStudents = System.examQuestionSet.get(0).get_questions().size;
         }
         
         //save the window label for later
@@ -104,12 +104,12 @@ public class Export : Object
         //generate all of the images
         for (int student = 0; student < numStudents; student++)
         {
-            string sutdentNumPadded = Export.numToPadded(student+1, numStudents+1);
+            string student_num_padded = Export.numToPadded(student+1, numStudents+1);
 
             //generate student name image
-            System.mainWindow.set_title("Generating Student" + sutdentNumPadded + "_Name.png");
+            System.mainWindow.set_title("Generating Student" + student_num_padded + "_Name.png");
             Gdk.Pixbuf studentName = System.examImage.renderQuestionOnTest(questionSets.get(0), student);
-            string nameFilename = "".concat(filePath, "/latexImages/", "Student", sutdentNumPadded, "_Name", ".png");
+            string nameFilename = "".concat(filePath, "/latexImages/", "Student", student_num_padded, "_Name", ".png");
             try
             {
                 studentName.save(nameFilename, "png");
@@ -122,9 +122,9 @@ public class Export : Object
             //loop through all question sets to go through a single exam:
             for (int question = 1; question < questionSets.size; question++)
             {
-                System.mainWindow.set_title("Generating Student" + sutdentNumPadded + "__Question" + (question).to_string() + ".png");
+                System.mainWindow.set_title("Generating Student" + student_num_padded + "__Question" + (question).to_string() + ".png");
                 Gdk.Pixbuf studentAnswer = System.examImage.renderQuestionOnTest(questionSets.get(question), student);
-                string filename = "".concat(filePath, "/latexImages/", "Student", sutdentNumPadded, "_Question", (question).to_string(), ".png");
+                string filename = "".concat(filePath, "/latexImages/", "Student", student_num_padded, "_Question", (question).to_string(), ".png");
                 try
                 {
                     studentAnswer.save(filename, "png");
@@ -141,12 +141,12 @@ public class Export : Object
         //create the .tex file for each student
         for (int student = 0; student < numStudents; student++)
         {
-            string sutdentNumPadded = Export.numToPadded(student+1, numStudents+1);
+            string student_num_padded = Export.numToPadded(student+1, numStudents+1);
 
             //create the .tex file that pdflatex will generate the pdf from
             try
             {
-                GLib.File latexFile = GLib.File.new_for_path(filePath + "/" + "Student" + sutdentNumPadded + "Report.tex");
+                GLib.File latexFile = GLib.File.new_for_path(filePath + "/" + "Student" + student_num_padded + "Report.tex");
                 
                 if (latexFile.query_exists()) //delete it if it already exists.
                 {
@@ -166,7 +166,7 @@ public class Export : Object
                 
                 dos.put_string("""\begin{figure}[ht!]""" + "\n");
                 dos.put_string("""\centering""" + "\n");
-                dos.put_string("""\includegraphics[width=\linewidth]{latexImages/Student""" + sutdentNumPadded + "_Name.png}\n");
+                dos.put_string("""\includegraphics[width=\linewidth]{latexImages/Student""" + student_num_padded + "_Name.png}\n");
                 dos.put_string("""\end{figure}""" + "\n\n");
                 
                 //loop through all question sets to go through a single exam:
@@ -176,29 +176,29 @@ public class Export : Object
                     
                     dos.put_string("""\begin{figure}[ht!]""" + "\n");
                     dos.put_string("""\centering""" + "\n");
-                    dos.put_string("""\includegraphics[width=\linewidth]{latexImages/Student""" + sutdentNumPadded + "_Question" + questionNum.to_string() + ".png}\n");
+                    dos.put_string("""\includegraphics[width=\linewidth]{latexImages/Student""" + student_num_padded + "_Question" + questionNum.to_string() + ".png}\n");
                     dos.put_string("""\end{figure}""" + "\n");
                     
                     QuestionSet questionSet = questionSets.get(questionNum);
-                    Gee.HashMap<int, Mark> pool = questionSet.rubricPool;
+                    Gee.HashMap<int, Mark> pool = questionSet.get_rubric();
                     
                     //get the current student's question
-                    Question question = questionSet.questions.get(student);
+                    Question question = questionSet.get_question(student);
                     
                     //calculate points lost
                     double pointsLost = 0.0;
-                    Gee.ArrayList<int> marks = question.marks;
+                    Gee.ArrayList<int> marks = question.get_marks();
                     for (int z = 0; z < marks.size; z++)
                     {
                         Mark mark = pool.get(marks.get(z));
                         if (mark != null)
                         {
-                            pointsLost += mark.getWorth();
+                            pointsLost += mark.get_worth();
                         }
                     }
-                    question.pointsEarned = questionSet.totalPoints + pointsLost;
+                    question.set_points_earned(questionSet.get_total_points() + pointsLost);
                     
-                    dos.put_string("Points: " + question.pointsEarned.to_string() + " out of " + questionSet.totalPoints.to_string() + "\n\n");
+                    dos.put_string("Points: " + question.get_points_earned().to_string() + " out of " + questionSet.get_total_points().to_string() + "\n\n");
                     dos.put_string("Comments:\n\n");
                     
                     //print mark descriptions
@@ -207,7 +207,7 @@ public class Export : Object
                         Mark mark = pool.get(marks.get(z));
                         if (mark != null)
                         {
-                            dos.put_string(toLatexSafeString(mark.getDescription()) + "\n\n");
+                            dos.put_string(toLatexSafeString(mark.get_description()) + "\n\n");
                         }
                     }
                 }
@@ -230,19 +230,19 @@ public class Export : Object
                     dos.put_string("""\hyperlink{page.""" + (questionNum+1).to_string() + "}{" + questionNum.to_string() + "} & ");
                     
                     QuestionSet questionSet = questionSets.get(questionNum);
-                    Gee.HashMap<int, Mark> pool = questionSet.rubricPool;
+                    Gee.HashMap<int, Mark> pool = questionSet.get_rubric();
                     
                     //get the current student's question
-                    Question question = questionSet.questions.get(student);
+                    Question question = questionSet.get_question(student);
                     
-                    dos.put_string(question.pointsEarned.to_string() + " & " + questionSet.totalPoints.to_string() + " & ");
-                    pointsTest += questionSet.totalPoints;
-                    pointsEarned += question.pointsEarned;
+                    dos.put_string(question.get_points_earned().to_string() + " & " + questionSet.get_total_points().to_string() + " & ");
+                    pointsTest += questionSet.get_total_points();
+                    pointsEarned += question.get_points_earned();
                     
                     bool firstIter = true;
                     
                     //print mark descriptions
-                    Gee.ArrayList<int> marks = question.marks;
+                    Gee.ArrayList<int> marks = question.get_marks();
                     for (int z = 0; z < marks.size; z++)
                     {
                         Mark mark = pool.get(marks.get(z));
@@ -250,11 +250,11 @@ public class Export : Object
                         {
                             if (firstIter)
                             {
-                                dos.put_string(toLatexSafeString(mark.getDescription()));
+                                dos.put_string(toLatexSafeString(mark.get_description()));
                             }
                             else
                             {
-                                dos.put_string(""" \newline \newline """ + toLatexSafeString(mark.getDescription()));
+                                dos.put_string(""" \newline \newline """ + toLatexSafeString(mark.get_description()));
                             }
                             
                             firstIter = false;
@@ -274,8 +274,8 @@ public class Export : Object
                 string finalGrade = Export.percentageToPrettyString(pointsEarned/pointsTest);
 
                 //make a summary of this student for later, when we create the final report of all students
-                StudentSummary thisStudentSummary = new StudentSummary("Student" + sutdentNumPadded,
-                                                                       "latexImages/Student" + sutdentNumPadded + "_Name.png",
+                StudentSummary thisStudentSummary = new StudentSummary("Student" + student_num_padded,
+                                                                       "latexImages/Student" + student_num_padded + "_Name.png",
                                                                        pointsEarned.to_string(),
                                                                        pointsTest.to_string(),
                                                                        finalGrade);

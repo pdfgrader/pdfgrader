@@ -186,7 +186,7 @@ public class ExamImage
         {
             if (key.keyval == 0xff1b) //escape will clear the hotkey
             {
-                System.markHotkeyButton.mark.hotKey = 0;
+                System.markHotkeyButton.mark.set_hot_key(0);
                 System.markHotkeyButton.set_label("");
                 
                 System.isBindingNewMarkHotkey = false;
@@ -205,7 +205,7 @@ public class ExamImage
                     string keyDisplay = System.keyvalToString(key.keyval);
 
                     System.markHotkeyButton.set_label(keyDisplay); //set the label to new hotkey string
-                    System.markHotkeyButton.mark.hotKey = key.keyval;
+                    System.markHotkeyButton.mark.set_hot_key(key.keyval);
                     
                     System.isBindingNewMarkHotkey = false;
                     System.markHotkeyButton = null;
@@ -224,8 +224,8 @@ public class ExamImage
             if (index != -1)
             {
                 QuestionSet questionSet = System.examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
-                Question currQuestion = questionSet.getQuestions().get(System.currentTest); 
-                Gee.ArrayList<int> questionActiveMarks = currQuestion.getMarks();
+                Question currQuestion = questionSet.get_questions().get(System.currentTest); 
+                Gee.ArrayList<int> questionActiveMarks = currQuestion.get_marks();
                 if (questionActiveMarks.contains(index))
                 {
                     questionActiveMarks.remove(index);
@@ -383,7 +383,7 @@ public class ExamImage
                         string pointsTitle = "Instructions";
                         double pointWorth = System.getNumberFromUserPrompt(pointsQuestion, pointsTitle);
                         QuestionSet newQ = new QuestionSet(this.currentQuestionSetup, pointWorth, bounds, this.currentPage, numTests);
-                        newQ.addDefaultMarks();
+                        newQ.add_default_marks();
                         System.examQuestionSet.add(newQ);
                         
                         if (this.currentQuestionSetup < System.examQuestionsPerTest)
@@ -421,8 +421,8 @@ public class ExamImage
                             this.isSettingUpBounds = false;
                             this.currentQuestionSetup = 0;
 
-                            Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
-                            Save.saveAll(System.PDFPath, System.examQuestionSet);
+                            Save.create_meta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
+                            Save.save_all(System.PDFPath, System.examQuestionSet);
 
                             
                             //remove all questions from memory except question 1
@@ -746,7 +746,7 @@ public class ExamImage
         }
         
         QuestionSet qs = System.examQuestionSet.get(0); //add 1 because first entry is name space
-        this.currentPage = qs.getPageNum() + System.currentTest*System.examPagesPerTest;
+        this.currentPage = qs.get_page_num() + System.currentTest*System.examPagesPerTest;
         
         //make sure we are on the right page
         this.renderNewPage();
@@ -771,7 +771,7 @@ public class ExamImage
         
         //step 2: select the bounds of the scaled image to be our specific question bounds
         
-        double[] bounds = qs.getBounds();
+        double[] bounds = qs.get_bounds();
         double minX = double.min(bounds[0], bounds[2]);
         double maxX = double.max(bounds[0], bounds[2]);
         double minY = double.min(bounds[1], bounds[3]);
@@ -811,7 +811,7 @@ public class ExamImage
         
         //calculate which page this question is on
         QuestionSet qs = questionSet;
-        int pageNum = qs.getPageNum() + testNumber*System.examPagesPerTest;
+        int pageNum = qs.get_page_num() + testNumber*System.examPagesPerTest;
         
         //render the pdf page onto the surface via the context
         var page = this.document.get_page(pageNum);
@@ -821,7 +821,7 @@ public class ExamImage
         
         //step 2: select the bounds of the scaled image to be our specific question bounds
         
-        double[] bounds = qs.getBounds();
+        double[] bounds = qs.get_bounds();
         double minX = double.min(bounds[0], bounds[2]);
         double maxX = double.max(bounds[0], bounds[2]);
         double minY = double.min(bounds[1], bounds[3]);

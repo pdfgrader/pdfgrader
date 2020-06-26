@@ -16,12 +16,6 @@ public class QuestionSet : Object{
         this.bounds = b;
         this.pageNum = pNum;
         this.questions = new Gee.ArrayList<Question>();
-        /*
-        for(int i = 0; i < num; i++){
-            Question q = new Question();
-            this.questions.add(q);
-        }
-        */
         this.rubricPool = new Gee.HashMap<int, Mark>();
     }
 
@@ -31,7 +25,6 @@ public class QuestionSet : Object{
             Question q = new Question();
             this.questions.add(q);
         }
-
     }
     
     public void addDefaultMarks() {
@@ -48,8 +41,7 @@ public class QuestionSet : Object{
         return rubricPool.get(ID);
     }
 
-    //There's probably a better way to do this but I'm new to vala
-    public bool bounds_is_null() { 
+    public bool are_bounds_valid() { 
         if (bounds[0] == 0 && bounds[1] == 0 && bounds[2] == 0 && bounds[3] == 0) { 
             return true;
         } else { 
@@ -61,8 +53,8 @@ public class QuestionSet : Object{
         this.totalPoints = points;
     }
 
-    public void set_bounds(double[] d){
-        this.bounds = d;
+    public void set_bounds(double[] bounds){
+        this.bounds = bounds;
     }
     
     public double[] getBounds(){

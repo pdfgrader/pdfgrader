@@ -119,9 +119,76 @@ public class ExamImage {
         
         this.image = new Gtk.Image.from_surface(surface);
     }
-    
-    public bool onKeyReleased(Gtk.Widget source, Gdk.EventKey key)
-    {
+
+    /**
+     * Procedure for exiting the setup process and starts the grading process
+     *
+     * Updates all the inputs provided during the setup process (pages per test, questions per test, question point values, the exam question set) then saves. 
+     * The actual grading process is then started. 
+     * Called by the keypress handler for q. If/when a GUI button is added to end setup process, will be called by that too.
+     *
+     */
+    public void exit_setup() { 
+        // Done with grading - save everything
+        this.is_setting_up_bounds = false;
+        // Update question bounds with the values from the setup entries
+        System.update_question_points();
+        // Update examQuestionsPerTest
+        System.update_number_questions();
+        // Update exam_pages_per_test
+        System.update_pages_per_test();
+
+        // Populate QuestionSet with empty questions depending on the number of exam questions per test
+        System.update_question_sets(this.document.get_n_pages()/System.examPagesPerTest);
+
+        Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
+        Save.saveAll(System.PDFPath, System.examQuestionSet);
+
+        System.isGrading = true;
+        System.currentQuestion = -1;
+
+        // Start grading question 1 by default
+        System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
+    }
+
+    /**
+     * Procedure for updating or setting the bounds on a question set.
+     *
+     * Checks whether or not there exists a question set for the currently selected grading button.
+     * If there is (user is editing bounds), add bounds to the question at that index
+     * If there isn't (it is a new question), make a new question and throw it in there.
+     * Not to be mistaken with the QuestionSet class method set_bounds, which is called within this function.
+     *
+     */
+    public void update_bounds(double[] bounds) { 
+        if (System.question_incrementer == System.active_grading_button) { 
+            //Edge case for if the user immediately wishes to edit a question bounds before pressing n
+            if (System.active_grading_button < System.examQuestionSet.size && System.examQuestionSet.size != 0) { 
+
+                System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
+                print("ExamImage:: Exam question bounds adjusted for most recent question\n");
+
+            } else { 
+
+                // Case where we need to make a new question set 
+                QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage);
+                new_q.addDefaultMarks();
+                System.examQuestionSet.add(new_q);
+            }
+
+        } else if (System.active_grading_button < System.examQuestionSet.size) { 
+
+            //Case: User is editing a question's bounds from the setup menu - just update the bounds
+            System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
+            print("ExamImage.vala :: Exam question bounds edited for question " + System.active_grading_button.to_string() + "\n");
+
+        } else { 
+            print ("ExamImage.vala :: Something went wrong \n");
+        }
+
+    }
+
+    public bool onKeyReleased(Gtk.Widget source, Gdk.EventKey key) {
         if (key.keyval == Gdk.Key.Control_L ||
             key.keyval == Gdk.Key.Control_R)
         {
@@ -354,27 +421,7 @@ public class ExamImage {
                 case Gdk.Key.q: 
                 { 
                     if (System.verify_bounds_setup()) { 
-                        // Done with grading - save everything
-                        this.is_setting_up_bounds = false;
-                        // Update question bounds with the values from the setup entries 
-                        System.update_question_points();
-                        // Update examQuestionsPerTest
-                        System.update_number_questions();
-                        // Update examPagesPerTest
-                        System.update_pages_per_test();
-
-                        // Populate QuestionSet with empty questions depending on the number of examQuestionsPerTest 
-                        System.update_question_sets(this.document.get_n_pages()/System.examPagesPerTest);
-
-                        Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
-                        Save.saveAll(System.PDFPath, System.examQuestionSet);
-                        
-                        System.isGrading = true;
-                        System.currentQuestion = -1;
-                        
-                        //start grading question 1 by default
-                        System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
-
+                        exit_setup();
                         break;
                     } else { 
                         print ("ExamImage.vala :: Cannot complete setup - you have unfinished bounds");
@@ -385,48 +432,14 @@ public class ExamImage {
                 
                 case Gdk.Key.Return:
                 {
-                    if (this.is_setting_up_bounds)
-                    {
+                    if (this.is_setting_up_bounds) {
                         double[] bounds = new double[4];
                         bounds[0] = coordsClickStartX;
                         bounds[1] = coordsClickStartY;
                         bounds[2] = coordsClickEndX;
                         bounds[3] = coordsClickEndY;
 
-                        //int numTests = this.document.get_n_pages()/System.examPagesPerTest;
-                        string pointsQuestion = "How much is this question worth?";
-                        string pointsTitle = "Instructions";
-                        //double pointWorth = System.getNumberFromUserPrompt(pointsQuestion, pointsTitle);
-
-
-                        // Check whether or not there exists a question set for the currently selected grading button. 
-                        // If there is (user is editing bounds), add bounds to the question at that index
-                        // If there isn't (it is a new question), make a new question and throw it in there
-
-                        if (System.question_incrementer == System.active_grading_button) { 
-
-                            //Edge case for if the user immediately wishes to edit a question bounds before pressing n
-                            if (System.active_grading_button < System.examQuestionSet.size && System.examQuestionSet.size != 0) { 
-                                System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
-                                print("ExamImage:: Exam question bounds for most recent question adjusted\n");
-
-                            } else { 
-                                
-                                QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage);
-                                new_q.addDefaultMarks();
-                                System.examQuestionSet.add(new_q);
-                            }
-
-                        } else if (System.active_grading_button < System.examQuestionSet.size) { 
-                            
-                            //Case: User is editing a question's bounds from the setup menu - just update the bounds
-                            System.examQuestionSet.get(System.active_grading_button).set_bounds(bounds);
-                            print ("ExamImage.vala :: Exam question bounds edited for question " + System.active_grading_button.to_string() + "\n");
-
-                        } else { 
-                            print ("ExamImage.vala :: Something went wrong \n");
-                        }
-
+                        update_bounds(bounds);
                         
                     }
 

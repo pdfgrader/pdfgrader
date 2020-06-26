@@ -7,7 +7,6 @@ public class System {
     public static Gee.ArrayList<QuestionSet> examQuestionSet; //the master list of all QuestionSets for the current exam
     public static int examPagesPerTest = 0;
     public static int examQuestionsPerTest = 0;
-
     public static int question_incrementer = 0; //For the purpose of testing new set up process. Will remove and replace with examQuestionsPerTest
 
     public static string password = "garbage";
@@ -25,16 +24,13 @@ public class System {
     public static MarkViewHotkeyButton markHotkeyButton;
 
     public static Gtk.RadioButton name_radio; //Radio button with name, needs to be global so other radio buttons can be added to the set of radio buttons
-
     public static int active_grading_button = 0; //The question number of the radio button that is currently selected. 0 means name is selected
-
     public static Gtk.Label notification_label; //Notification label at the bottom of the marksGrid - updates when changes are made during setup
 
 
     private System(){}
     
-    public static int main(string[] args)
-    {
+    public static int main(string[] args) {
         Gtk.init(ref args);
 
         initUI();
@@ -109,10 +105,7 @@ public class System {
             var menuItemQuestion = new Gtk.MenuItem.with_label("Question");
             menuItemQuestion.set_submenu(menuQuestion);
             menuBar.append(menuItemQuestion);
-
-
         }
-        
 
         //setup window area UI
         {
@@ -141,12 +134,11 @@ public class System {
             //put marksGrid in scrollable in case of overflow
             var scroll = new Gtk.ScrolledWindow(null,null);
             scroll.set_size_request(230,500);
-            scroll.set_propagate_natural_width(true);
 
             marksGrid = new Gtk.Grid();
             marksGrid.set_row_spacing(5);
             marksGrid.set_column_spacing(5);
-            marksGrid.set_size_request(230, 500); //100 = minimum width
+            marksGrid.set_size_request(230, 500); //230 is the minimum width due to task bar
 
             scroll.add(marksGrid);
 
@@ -421,8 +413,6 @@ public class System {
             
             
             currentQuestion = 0;
-            //DEBUG: Move this somewhere else
-            //createQuestionMenuItems();
             
             examQuestionSet = new Gee.ArrayList<QuestionSet>();
 
@@ -877,9 +867,6 @@ public class System {
                 active_grading_button = button.get_label().substring(button.get_label().length-2).to_int();
             }
 
-            //TESTING_CODE
-            print ("active button changed to " + active_grading_button.to_string() + "\n");
-
         } else { 
             state = "off";
             print ("\n");
@@ -889,20 +876,18 @@ public class System {
 
     // Verifies that there are non-null bounds for each question
     public static bool verify_bounds_setup() { 
-
         bool ret_val = true;
         for(int i = 1; i <= question_incrementer; i++) { 
             if(examQuestionSet.size != question_incrementer+1) { 
                 print ("System.verify_bounds_setup() :: examQuestionSet size isn't equal to question incrementer at " +i.to_string() + "\n");
                 ret_val = false;
-            } else if ( examQuestionSet.get(i).bounds_is_null()) { 
+            } else if ( examQuestionSet.get(i).are_bounds_valid()) { 
                 print ("System.verify_bounds.setup() :: There are null bounds in the examQuestionSet: " + i.to_string() + "\n");
                 ret_val = false;
             } else { 
                 print ("System.verify_bounds_setup() :: All question bounds are set properly\n");
             }
         }
-
         return ret_val;
     }
 
@@ -929,7 +914,7 @@ public class System {
     // Updates examQuestionsPerTest with the current question incrementer, removing the need for a dialog asking the user how many questions there are
     public static void update_number_questions() { 
         //DEBUG
-        print ("System[901] :: Question incrementer at " + question_incrementer.to_string() + ". Updating examQuestionsPerTest\n");
+        print ("System.vala :: Question incrementer at " + question_incrementer.to_string() + ". Updating examQuestionsPerTest\n");
 
         examQuestionsPerTest = question_incrementer;
     }

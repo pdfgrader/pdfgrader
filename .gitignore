@@ -1,2 +1,32 @@
 *.exe
 .vs/
+
+
+# Autotools related files that we don't necessarily want to track
+program/Makefile.in
+program/aclocal.m4
+program/autom4te.cache/
+program/compile
+program/config.h
+program/config.h.in
+program/config.log
+program/config.status
+program/configure
+program/depcomp 
+program/install-sh
+program/missing
+program/stamp-h1 
+
+program/src/main/.deps/
+program/src/main/.dirstamp
+
+# Products of building PDFgrader, dont want to track necessarily
+program/pdfgrader
+program/pdfgrader-0.2.tar.gz
+program/pdfgrader_vala.stamp
+program/src/main/*.o
+program/src/main/*.c
+
+# Pdfgrader data storages 
+docs/.data/
+

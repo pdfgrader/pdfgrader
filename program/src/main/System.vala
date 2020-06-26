@@ -205,14 +205,14 @@ public class System {
             return;
         }
         
-        Save.saveSpecific(PDFPath, examQuestionSet.get(0));
-        Lock.closeFile(PDFPath, currentQuestion);
+        Save.save_specific(PDFPath, examQuestionSet.get(0));
+        Lock.close_file(PDFPath, currentQuestion);
     }
     
     private static bool timerCallback()
     {   
         if (currentQuestion > 0) {
-            Save.saveSpecific(PDFPath, examQuestionSet.get(0));
+            Save.save_specific(PDFPath, examQuestionSet.get(0));
         }
         return true;
     }
@@ -250,9 +250,8 @@ public class System {
         marksGrid.foreach((element) => marksGrid.remove(element));
         
         var questionSet = examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
-        var currQuestion = questionSet.getQuestions().get(currentTest); //the specific student's test question
-        var pool = questionSet.rubricPool;
-
+        var currQuestion = questionSet.get_questions().get(currentTest); //the specific student's test question
+        var pool = questionSet.get_rubric();
         
         int i = 0;
         foreach (Mark mark in pool.values)
@@ -260,7 +259,7 @@ public class System {
             var actionbar = new Gtk.ActionBar();
             actionbar.set_hexpand(true);
             
-            var label = new Gtk.Label(mark.getDescription());
+            var label = new Gtk.Label(mark.get_description());
             label.set_line_wrap(true);
             label.set_size_request(96, -1); //make some room for mark descriptions
             actionbar.pack_start(label);
@@ -268,7 +267,7 @@ public class System {
             var checkbox = new MarkViewCheckbox(mark);
             checkbox.set_size_request(24, -1);
             actionbar.pack_end(checkbox);
-            if (currQuestion.getMarks().contains(mark.getID()))
+            if (currQuestion.get_marks().contains(mark.get_id()))
             {
                 checkbox.set_active(true);
             }
@@ -281,16 +280,16 @@ public class System {
             var button = new MarkViewHotkeyButton(mark);
             button.set_size_request(24, -1);
             actionbar.pack_end(button);
-            if (mark.hotKey != 0)
+            if (mark.get_hot_key() != 0)
             {
-                button.set_label(keyvalToString(mark.hotKey));
+                button.set_label(keyvalToString(mark.get_hot_key()));
             }
             button.clicked.connect(clickedMarkHotkey);
             
             var entryWorth = new MarkViewWorthEntry(mark);
             entryWorth.set_size_request(24, -1);
             entryWorth.set_visibility(true);
-            entryWorth.set_text(mark.getWorth().to_string());
+            entryWorth.set_text(mark.get_worth().to_string());
             //entryWorth.set_max_length(4); Gtk.Entry's seem to have some large hard coded minimum length that this does not override.
             actionbar.pack_end(entryWorth);
 
@@ -309,8 +308,8 @@ public class System {
     public static void refreshMarkViewCheckboxes()
     {
         var questionSet = examQuestionSet.get(0); //get the question set that is currently being graded
-        var currQuestion = questionSet.getQuestions().get(currentTest); //the specific student's question
-        var pool = questionSet.rubricPool;
+        var currQuestion = questionSet.get_questions().get(currentTest); //the specific student's question
+        var pool = questionSet.get_rubric();
         
         int i = 0;
         foreach (Mark mark in pool.values)
@@ -321,7 +320,7 @@ public class System {
 
             MarkViewCheckbox checkbox = (MarkViewCheckbox)widgets.nth_data(3);
 
-            if (currQuestion.getMarks().contains(mark.getID()))
+            if (currQuestion.get_marks().contains(mark.get_id()))
             {
                 checkbox.set_active(true);
             }
@@ -340,23 +339,23 @@ public class System {
     {
         var btn = (MarkViewCheckbox)source;
         var questionSet = examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
-        var currQuestion = questionSet.getQuestions().get(currentTest); //the specific student's test question
-        var questionActiveMarks = currQuestion.getMarks();
-
+        var currQuestion = questionSet.get_questions().get(currentTest); //the specific student's test question
+        var questionActiveMarks = currQuestion.get_marks();
+        
         var mark = btn.mark;
         
         if (btn.get_active()) //the checkbox is now checked, so add the mark to the question's mark list
         {
-            if (!questionActiveMarks.contains(mark.getID()))
+            if (!questionActiveMarks.contains(mark.get_id()))
             {
-                questionActiveMarks.add(mark.getID());
+                questionActiveMarks.add(mark.get_id());
             }
         }
         else //the checkbox is now unchecked, remove the mark from the question's mark list
         {
-            if (questionActiveMarks.contains(mark.getID()))
+            if (questionActiveMarks.contains(mark.get_id()))
             {
-                questionActiveMarks.remove(mark.getID());
+                questionActiveMarks.remove(mark.get_id());
             }
         }
     }
@@ -380,14 +379,14 @@ public class System {
 
         if (double.try_parse(newWorthText))
         {
-            worthEntry.mark.setWorth(double.parse(newWorthText));
+            worthEntry.mark.set_worth(double.parse(newWorthText));
         }
     }
     
     private static void clickedFileSave()
     {
         if (currentQuestion > 0) {
-            Save.saveSpecific(PDFPath, examQuestionSet.get(0));
+            Save.save_specific(PDFPath, examQuestionSet.get(0));
         }
     }
 
@@ -444,7 +443,7 @@ public class System {
                 examImage.refreshCurrentPage();
                 
                 try {
-                    Save.readMeta(ref examQuestionsPerTest, ref examPagesPerTest, out password, PDFPath);
+                    Save.read_meta(ref examQuestionsPerTest, ref examPagesPerTest, out password, PDFPath);
                     
                     int qNum = 1;
                     QuestionSet startingQuestion;
@@ -487,7 +486,7 @@ public class System {
         if (filePath != null)
         {
             //save current question out to the file so we don't skip any local changes in the export
-            Save.saveSpecific(PDFPath, examQuestionSet.get(0));
+            Save.save_specific(PDFPath, examQuestionSet.get(0));
 
             Export.exportAsLaTeX(filePath);
         }
@@ -549,11 +548,11 @@ public class System {
                     retry = false;
                     
                     var questionSet = examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
-                    var pool = questionSet.rubricPool;
+                    var pool = questionSet.get_rubric();
                     int maxID = -1;
                     foreach (Mark mark in pool.values)
                     {
-                        maxID = int.max(maxID, mark.getID());
+                        maxID = int.max(maxID, mark.get_id());
                     }
                     maxID+=1; //make the next mark be one greater than the previous max of all the marks in the pool
                     
@@ -805,7 +804,7 @@ public class System {
         
         if (currentQuestion != -1) //write the old question out to the file, as we are no longer using it
         {
-            Save.saveSpecific(PDFPath, examQuestionSet.get(0));
+            Save.save_specific(PDFPath, examQuestionSet.get(0));
         }
         
         //make the new question we are editing be the only question in the question set
@@ -946,10 +945,10 @@ public class System {
     //map if there is a match
     public static int checkIfBound(uint binding)
     {
-        Gee.HashMap<int, Mark> currPool = examQuestionSet.get(0).getRubric(); //since the first entry is the name space, we need to add 1
+        Gee.HashMap<int, Mark> currPool = examQuestionSet.get(0).get_rubric(); //since the first entry is the name space, we need to add 1
         for (int i = 0; i < currPool.size; i++)
         {
-            if(binding == currPool.get(i).getHotKey())
+            if(binding == currPool.get(i).get_hot_key())
             {
                 return i;
             }

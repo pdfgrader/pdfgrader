@@ -159,11 +159,11 @@ public class Save
         while (reader.const_name() != null) {
             switch (reader.const_name()) {
 
-                case "totalPoints":
-                    totalPoints = int.parse(reader.get_attribute("points"));
-                    if (bounds[0] != -1 && bounds[1] != -1 && bounds[2] != -1 && bounds[3] != -1 && pageNum != -1) {
-                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum);
-                        question.init_question_set(numTests);
+                case "total_points":
+                    total_points = int.parse(reader.get_attribute("points"));
+                    if (bounds[0] != -1 && bounds[1] != -1 && bounds[2] != -1 && bounds[3] != -1 && page_num != -1) {
+                        question = new QuestionSet(question_num, total_points, bounds, page_num);
+                        question.init_question_set(num_tests);
 
                     }
                     next(reader);
@@ -175,20 +175,20 @@ public class Save
                     bounds[2] = double.parse(reader.get_attribute("bound3"));
                     bounds[3] = double.parse(reader.get_attribute("bound4"));
 
-                    if (totalPoints != -1 && pageNum != -1) {
-                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum);
-                        question.init_question_set(numTests);
+                    if (total_points != -1 && page_num != -1) {
+                        question = new QuestionSet(question_num, total_points, bounds, page_num);
+                        question.init_question_set(num_tests);
 
                     }
                     next(reader);
                     break;
                 
 
-                case "pageNum":
-                    pageNum = int.parse(reader.get_attribute("page"));
-                    if (bounds[0] != -1 && bounds[1] != -1 && bounds[2] != -1 && bounds[3] != -1 && totalPoints != -1) {
-                        question = new QuestionSet(qNum, totalPoints, bounds, pageNum);
-                        question.init_question_set(numTests);
+                case "page_num":
+                    page_num = int.parse(reader.get_attribute("page"));
+                    if (bounds[0] != -1 && bounds[1] != -1 && bounds[2] != -1 && bounds[3] != -1 && total_points != -1) {
+                        question = new QuestionSet(question_num, total_points, bounds, page_num);
+                        question.init_question_set(num_tests);
 
                     }
                     next(reader);

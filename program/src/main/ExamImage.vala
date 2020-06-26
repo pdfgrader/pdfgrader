@@ -141,8 +141,8 @@ public class ExamImage {
         // Populate QuestionSet with empty questions depending on the number of exam questions per test
         System.update_question_sets(this.document.get_n_pages()/System.examPagesPerTest);
 
-        Save.createMeta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
-        Save.saveAll(System.PDFPath, System.examQuestionSet);
+        Save.create_meta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
+        Save.save_all(System.PDFPath, System.examQuestionSet);
 
         System.isGrading = true;
         System.currentQuestion = -1;
@@ -266,8 +266,8 @@ public class ExamImage {
             {
                 QuestionSet questionSet = System.examQuestionSet.get(0); //since the first entry is the name space, we need to add 1
 
-                Question currQuestion = questionSet.getQuestions().get(System.currentTest); 
-                Gee.ArrayList<int> questionActiveMarks = currQuestion.getMarks();
+                Question currQuestion = questionSet.get_questions().get(System.currentTest); 
+                Gee.ArrayList<int> questionActiveMarks = currQuestion.get_marks();
                 if (questionActiveMarks.contains(index)) {
 
                     questionActiveMarks.remove(index);

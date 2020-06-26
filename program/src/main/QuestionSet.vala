@@ -3,21 +3,21 @@ using Gee;
 
 
 public class QuestionSet : Object{
-    public int questionNum; // question number
-    public double totalPoints; // total points possible
+    public int question_num; // question number
+    public double total_points; // total points possible
     public double[] bounds;
-    public int pageNum; // which page is this question on?
-    public Gee.HashMap<int, Mark> rubricPool;
+    public int page_num; // which page is this question on?
+    public Gee.HashMap<int, Mark> rubric_pool;
     public Gee.ArrayList<Question> questions;
     //private Question currQuestion;
 
     public QuestionSet(int QNum, double total, double[] b, int pNum){
-        this.questionNum = QNum;
-        this.totalPoints = total;
+        this.question_num = QNum;
+        this.total_points = total;
         this.bounds = b;
-        this.pageNum = pNum;
+        this.page_num = pNum;
         this.questions = new Gee.ArrayList<Question>();
-        this.rubricPool = new Gee.HashMap<int, Mark>();
+        this.rubric_pool = new Gee.HashMap<int, Mark>();
     }
 
     // Fills question set with new empty questions - HAS to be called before grading starts but can only be called after the number of tests has been determined (aka, end of setup)
@@ -29,9 +29,9 @@ public class QuestionSet : Object{
     }
     
     public void addDefaultMarks() {
-        this.rubricPool[0] = new Mark(0, -totalPoints, "No points", true);
-        this.rubricPool[1] = new Mark(1, -totalPoints/2, "Half points", true);
-        this.rubricPool[2] = new Mark(2, 0.0, "Full points", true);
+        this.rubric_pool[0] = new Mark(0, -total_points, "No points", true);
+        this.rubric_pool[1] = new Mark(1, -total_points/2, "Half points", true);
+        this.rubric_pool[2] = new Mark(2, 0.0, "Full points", true);
     }
     
     public Question questionSelect(int num){
@@ -52,7 +52,7 @@ public class QuestionSet : Object{
     }
 
     public void set_points(double points) { 
-        this.totalPoints = points;
+        this.total_points = points;
     }
 
     public void set_bounds(double[] bounds){

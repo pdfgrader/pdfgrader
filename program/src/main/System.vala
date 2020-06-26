@@ -935,7 +935,7 @@ public class System {
             examQuestionSet.get(i).init_question_set(num_tests);
         }
 
-        print ("hee haw yee haw: " + examPagesPerTest.to_string() + "\n");
+        print ("System.vala :: There are " + examPagesPerTest.to_string() + " per test. Setup has ended.\n");
         //Last step in ending setup - can only be done after examPagesPerTest has been updated
         createQuestionMenuItems();
     }

@@ -138,17 +138,21 @@ public class ExamImage {
         // Update exam_pages_per_test
         System.update_pages_per_test();
 
-        // Populate QuestionSet with empty questions depending on the number of exam questions per test
-        System.update_question_sets(this.document.get_n_pages()/System.examPagesPerTest);
+        if (System.examPagesPerTest > this.document.get_n_pages()) { 
+            print("ExamImage.vala :: ExamPagesPerTest is greater than the number of pages in your pdf document");
+        } else { 
+            // Populate QuestionSet with empty questions depending on the number of exam questions per test
+            System.update_question_sets(this.document.get_n_pages()/System.examPagesPerTest);
+            Save.create_meta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
+            Save.save_all(System.PDFPath, System.examQuestionSet);
 
-        Save.create_meta(System.examQuestionsPerTest, System.examPagesPerTest, System.password, System.PDFPath);
-        Save.save_all(System.PDFPath, System.examQuestionSet);
+            System.isGrading = true;
+            System.currentQuestion = -1;
 
-        System.isGrading = true;
-        System.currentQuestion = -1;
+            // Start grading question 1 by default
+            System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
+        }
 
-        // Start grading question 1 by default
-        System.clickedQuestionMenuItem(new Gtk.MenuItem.with_label("Question 1"));
     }
 
     /**
@@ -422,7 +426,10 @@ public class ExamImage {
 
                 case Gdk.Key.q: 
                 { 
-                    if (System.verify_bounds_setup()) { 
+                    if (System.examPagesPerTest > this.document.get_n_pages()) { 
+                        print("ExamImage.vala :: Exam Pages Per Test exceeds the number of pages in your pdf document");
+                        break;
+                    } else if (System.verify_bounds_setup()) { 
                         exit_setup();
                         break;
                     } else { 

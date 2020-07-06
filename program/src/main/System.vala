@@ -7,7 +7,7 @@ public class System {
     public static Gee.ArrayList<QuestionSet> examQuestionSet; //the master list of all QuestionSets for the current exam
     public static int examPagesPerTest = 0;
     public static int examQuestionsPerTest = 0;
-    public static int question_incrementer = 0; //For the purpose of testing new set up process. Will remove and replace with examQuestionsPerTest
+    public static int question_incrementer = 0; 
 
     public static string password = "garbage";
     public static string PDFPath;

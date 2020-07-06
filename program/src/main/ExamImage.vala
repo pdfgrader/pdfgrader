@@ -172,7 +172,7 @@ public class ExamImage {
 
                 // Case where we need to make a new question set 
                 QuestionSet new_q = new QuestionSet(System.question_incrementer, 0.0, bounds, this.currentPage);
-                new_q.addDefaultMarks();
+                new_q.add_default_marks();
                 System.examQuestionSet.add(new_q);
             }
 

@@ -28,7 +28,7 @@ public class QuestionSet : Object{
         }
     }
     
-    public void addDefaultMarks() {
+    public void add_default_marks() {
         this.rubric_pool[0] = new Mark(0, -total_points, "No points", true);
         this.rubric_pool[1] = new Mark(1, -total_points/2, "Half points", true);
         this.rubric_pool[2] = new Mark(2, 0.0, "Full points", true);
@@ -55,13 +55,12 @@ public class QuestionSet : Object{
         this.total_points = points;
     }
 
-    public void set_bounds(double[] bounds){
+    public void set_bounds(double[] bounds) {
         this.bounds = bounds;
     }
 
     public double get_total_points() {
         return this.total_points;
-
     }
    
     public double[] get_bounds() {

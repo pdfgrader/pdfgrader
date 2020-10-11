@@ -133,7 +133,7 @@ public class System {
 
             //put marksGrid in scrollable in case of overflow
             var scroll = new Gtk.ScrolledWindow(null,null);
-            scroll.set_size_request(230,500);
+            scroll.set_size_request(400,500);
 
             marksGrid = new Gtk.Grid();
             marksGrid.set_row_spacing(5);

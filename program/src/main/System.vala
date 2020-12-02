@@ -19,7 +19,7 @@ public class System {
     public static Gtk.ProgressBar progress_bar; //progress bar for user to view how many questions are graded out of total number of questions
 
     public static Gtk.Grid marksGrid; //the grid that shows all of the current questions marks
-    public static Gtk.ActionBar page_nums; //Entry box for the value of examPagesPerTest on setup
+    public static Gtk.ActionBar page_nums; //Entry box for the value of examPagesPerTest on setup, later used to host the window resize tool
     public static bool isBindingNewMarkHotkey = false;
     public static MarkViewHotkeyButton markHotkeyButton;
 
@@ -235,6 +235,7 @@ public class System {
         }
         mainWindow.show_all();
     }
+
 
     
     //when the user selects a new question, call this to refresh which
@@ -928,12 +929,29 @@ public class System {
 
     }
 
+    // After setup, we need to change what goes into the bottom bar to allow for window resizes
+    // Validation for isGrading is done AFTER this is called in the 
+    public static void refreshBottomTaskBar() { 
+        //Clear previous
+        page_nums.foreach((element) => page_nums.remove(element));
+
+        //Add a checkbox for the window resizing
+        var window_resize = new Gtk.CheckButton.with_label("Window bounds crop");
+        page_nums.pack_start(window_resize);
+    
+        mainWindow.show_all();
+
+    }
+
     // Populates all QuestionSets with empty questions
     public static void update_question_sets(int num_tests) { 
         // For every question set in the test, fill with empty questions
         for (int i = 0; i < examQuestionSet.size; i++) { 
             examQuestionSet.get(i).init_question_set(num_tests);
         }
+
+        //Refresh the bottom task bar
+        refreshBottomTaskBar();
 
         print ("System.vala :: There are " + examPagesPerTest.to_string() + " per test. Setup has ended.\n");
         //Last step in ending setup - can only be done after examPagesPerTest has been updated

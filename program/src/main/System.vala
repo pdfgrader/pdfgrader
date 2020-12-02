@@ -937,9 +937,30 @@ public class System {
 
         //Add a checkbox for the window resizing
         var window_resize = new Gtk.CheckButton.with_label("Window bounds crop");
+
+        window_resize.toggled.connect (resize_callback);
+
         page_nums.pack_start(window_resize);
     
         mainWindow.show_all();
+
+    }
+
+    // Callback for the window bound resizing function
+    public static void resize_callback (Gtk.ToggleButton button) { 
+        var state = "unknown";
+
+        if (button.get_active ()) { 
+            state = "on";
+
+            //Call the functions
+            print ("WINDOW RESIZING TOGGLE ON!!!");
+
+
+        } else { 
+            state = "off";
+            print ("WINDOW RESIZING OFF");
+        }
 
     }
 

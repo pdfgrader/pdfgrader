@@ -29,4 +29,5 @@ program/src/main/*.c
 
 # Pdfgrader data storages 
 docs/.data/
+docs/.lock/
 
